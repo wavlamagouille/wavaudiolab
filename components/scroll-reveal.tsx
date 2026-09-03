@@ -11,7 +11,7 @@ import { animate, stagger, onScroll } from "animejs";
 export default function ScrollReveal({
   children,
   className,
-  staggerMs = 70,
+  staggerMs = 45,
 }: {
   children: React.ReactNode;
   className?: string;
@@ -33,9 +33,16 @@ export default function ScrollReveal({
     });
 
     animate(items, {
-      opacity: [0, 1],
-      translateY: [26, 0],
-      ease: "outQuad",
+      opacity: [
+        { to: 1, duration: 18, ease: "outQuad" },
+        { to: 1, duration: 64 },
+        { to: 0, duration: 18, ease: "inQuad" },
+      ],
+      translateY: [
+        { to: 0, duration: 18, ease: "outQuad" },
+        { to: 0, duration: 64 },
+        { to: -16, duration: 18, ease: "inQuad" },
+      ],
       delay: stagger(staggerMs),
       autoplay: onScroll({
         target: el,

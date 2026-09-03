@@ -1,39 +1,62 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { animate, stagger } from "animejs";
 
-// A wipe transition tied to the site's own signal-path idea: a bar of
-// signal-red sweeps in covering the screen, holds briefly at full opacity,
-// then sweeps off the other side revealing the new page — like a level
-// meter pinning full and dropping back. Next.js swaps the actual page
-// content instantly the moment the route changes (well before the bar
-// even reaches full coverage), so the swap itself is always hidden behind
-// the bar rather than racing it — no two animations to keep in sync.
+const BAR_COUNT = 48;
+
+// A waveform sweep, not a flat panel: each bar grows to full height in a
+// staggered wave (left to right), holds as a solid wall for a beat, then
+// shrinks back down in a staggered wave from the center outward — revealing
+// the new page as it goes. The page content underneath swaps the instant
+// the route changes (React does this synchronously on re-render), so by
+// the time the bars are even halfway up, the new page is already sitting
+// there waiting — the animation never has to race the content.
 export default function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const reduceMotion = useReducedMotion();
+  const barsRef = useRef<HTMLDivElement>(null);
+  const isFirstRender = useRef(true);
 
-  if (reduceMotion) {
-    return <>{children}</>;
-  }
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion || !barsRef.current) return;
+
+    const bars = barsRef.current.children;
+
+    animate(bars, {
+      scaleY: [
+        { to: 1, duration: 280, ease: "outExpo" },
+        { to: 0, duration: 380, delay: 260, ease: "inOutQuad" },
+      ],
+      delay: stagger(5, { from: "first" }),
+    });
+  }, [pathname]);
 
   return (
     <>
       <div key={pathname}>{children}</div>
-      <motion.div
-        key={`wipe-${pathname}`}
+      <div
+        ref={barsRef}
         aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-[100] bg-signal"
-        initial={{ scaleX: 0 }}
-        animate={{ scaleX: [0, 1, 1, 0] }}
-        transition={{
-          duration: 0.7,
-          times: [0, 0.45, 0.55, 1],
-          ease: [0.65, 0, 0.35, 1],
-        }}
-        style={{ transformOrigin: "left" }}
-      />
+        className="pointer-events-none fixed inset-0 z-[100] flex"
+      >
+        {Array.from({ length: BAR_COUNT }).map((_, i) => (
+          <span
+            key={i}
+            className={
+              i % 5 === 0
+                ? "h-full flex-1 origin-center bg-amber"
+                : "h-full flex-1 origin-center bg-signal"
+            }
+            style={{ transform: "scaleY(0)" }}
+          />
+        ))}
+      </div>
     </>
   );
 }

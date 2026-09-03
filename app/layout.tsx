@@ -12,6 +12,7 @@ import "@fontsource/ibm-plex-sans/600";
 import "./globals.css";
 import PageTransition from "@/components/page-transition";
 import BeamsBackground from "@/components/kokonutui/beams-background";
+import MouseTrail from "@/components/mouse-trail";
 
 export const metadata: Metadata = {
   title: "Wavaudiolab — Mixing & Mastering Studio",
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full bg-ink text-text">
         <BeamsBackground />
+        <MouseTrail />
         <PageTransition>{children}</PageTransition>
       </body>
     </html>

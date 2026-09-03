@@ -7,6 +7,7 @@ import ParticleButton from "@/components/kokonutui/particle-button";
 import ProductHeroImage from "@/components/product-hero-image";
 import { Stagger, StaggerItem } from "@/components/stagger";
 import ScrollReveal from "@/components/scroll-reveal";
+import CountUp from "@/components/count-up";
 import { products, getProduct } from "@/lib/products";
 
 export const dynamicParams = false;
@@ -125,27 +126,34 @@ export default async function ProductPage({
             <span className="h-px flex-1 bg-line" />
           </div>
           <ScrollReveal className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {product.contents.map((group) => (
-              <div
-                key={group.count}
-                className="rounded-2xl border border-line bg-panel p-6"
-              >
-                <div className="mb-4 font-display text-xl font-bold text-text">
-                  {group.count}
+            {product.contents.map((group) => {
+              const match = group.count.match(/^(\d+)(.*)$/);
+              return (
+                <div
+                  key={group.count}
+                  className="rounded-2xl border border-line bg-panel p-6"
+                >
+                  <div className="mb-4 font-display text-xl font-bold text-text">
+                    {match ? (
+                      <CountUp value={parseInt(match[1], 10)} suffix={match[2]} />
+                    ) : (
+                      group.count
+                    )}
+                  </div>
+                  <ul className="space-y-2.5">
+                    {group.items.map((item) => (
+                      <li
+                        key={item}
+                        className="flex items-baseline gap-2.5 font-mono text-[13px] text-muted"
+                      >
+                        <span className="text-signal">–</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="space-y-2.5">
-                  {group.items.map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-baseline gap-2.5 font-mono text-[13px] text-muted"
-                    >
-                      <span className="text-signal">–</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+              );
+            })}
           </ScrollReveal>
         </div>
       </div>

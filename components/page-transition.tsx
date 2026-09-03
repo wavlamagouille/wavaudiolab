@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { usePathname } from "next/navigation";
+import SignalCable from "./signal-cable";
 
 // A real shared-element transition, not a screen-covering effect: the
 // product image itself (same layoutId on the grid card and the detail
@@ -30,7 +31,9 @@ export default function PageTransition({ children }: { children: React.ReactNode
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        className="relative"
       >
+        <SignalCable />
         {children}
       </motion.div>
     </AnimatePresence>

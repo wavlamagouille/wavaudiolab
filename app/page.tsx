@@ -11,6 +11,7 @@ import SiteFooter from "@/components/site-footer";
 import RecDot from "@/components/rec-dot";
 import { Stagger, StaggerItem } from "@/components/stagger";
 import ScrollReveal from "@/components/scroll-reveal";
+import CountUp from "@/components/count-up";
 import { products } from "@/lib/products";
 
 const packs: Product[] = products.map((p) => ({
@@ -121,12 +122,12 @@ export default function Home() {
               </a>
             </div>
             <div className="rounded-2xl border border-line bg-panel px-7 py-6">
-              <SpecRow k="Up to 9 channels" v="100 CHF" />
-              <SpecRow k="Up to 14 channels" v="125 CHF" />
-              <SpecRow k="Up to 19 channels" v="150 CHF" />
-              <SpecRow k="Up to 29 channels" v="175 CHF" />
-              <SpecRow k="Up to 49 channels" v="200 CHF" />
-              <SpecRow k="50+ channels" v="250 CHF" hi last />
+              <SpecRow k="Up to 9 channels" count={100} suffix=" CHF" />
+              <SpecRow k="Up to 14 channels" count={125} suffix=" CHF" />
+              <SpecRow k="Up to 19 channels" count={150} suffix=" CHF" />
+              <SpecRow k="Up to 29 channels" count={175} suffix=" CHF" />
+              <SpecRow k="Up to 49 channels" count={200} suffix=" CHF" />
+              <SpecRow k="50+ channels" count={250} suffix=" CHF" hi last />
               <p className="mt-4 text-[12.5px] leading-relaxed text-muted-2">
                 Monitoring calibrated with Sonarworks Reference 4. Revisions
                 included until it&apos;s right.
@@ -142,8 +143,8 @@ export default function Home() {
           <StageHead num="STAGE 02" label="MASTERING" />
           <ScrollReveal className="grid items-start gap-[70px] md:grid-cols-[.9fr_1.1fr]">
             <div className="rounded-2xl border border-line bg-panel px-7 py-6 md:order-2">
-              <SpecRow k="Mastering, per track" v="25 CHF" />
-              <SpecRow k="Stem mastering, per track" v="50 CHF" />
+              <SpecRow k="Mastering, per track" count={25} suffix=" CHF" />
+              <SpecRow k="Stem mastering, per track" count={50} suffix=" CHF" />
               <SpecRow k="Turnaround" v="Typically 2–4 days" hi />
               <SpecRow k="Formats" v="WAV 24/16-bit" last />
               <p className="mt-4 text-[12.5px] leading-relaxed text-muted-2">
@@ -264,11 +265,29 @@ export default function Home() {
   );
 }
 
-function SpecRow({ k, v, hi, last }: { k: string; v: string; hi?: boolean; last?: boolean }) {
+function SpecRow({
+  k,
+  v,
+  count,
+  suffix,
+  hi,
+  last,
+}: {
+  k: string;
+  v?: string;
+  count?: number;
+  suffix?: string;
+  hi?: boolean;
+  last?: boolean;
+}) {
   return (
     <div className={`flex items-baseline justify-between py-[13px] font-mono text-[13.5px] ${last ? "" : "border-b border-line"}`}>
       <span className="text-muted">{k}</span>
-      <span className={hi ? "font-medium text-amber" : "font-medium text-text"}>{v}</span>
+      {count !== undefined ? (
+        <CountUp value={count} suffix={suffix} className={hi ? "font-medium text-amber" : "font-medium text-text"} />
+      ) : (
+        <span className={hi ? "font-medium text-amber" : "font-medium text-text"}>{v}</span>
+      )}
     </div>
   );
 }

@@ -5,6 +5,7 @@ import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import ParticleButton from "@/components/kokonutui/particle-button";
 import ProductHeroImage from "@/components/product-hero-image";
+import { Stagger, StaggerItem } from "@/components/stagger";
 import { products, getProduct } from "@/lib/products";
 
 export const dynamicParams = false;
@@ -60,53 +61,59 @@ export default async function ProductPage({
           />
 
           <div className="flex flex-col">
-            <div className={`mb-3 font-mono text-[11px] tracking-[0.1em] ${tagColor}`}>
-              {product.tag}
-            </div>
-            <h1 className="mb-5 font-display text-[clamp(36px,4.4vw,56px)] font-extrabold leading-[0.98]">
-              {product.title}
-            </h1>
-            <p className="mb-8 max-w-md text-[15px] leading-relaxed text-muted">
-              {product.intro}
-            </p>
+            <Stagger>
+              <StaggerItem className={`mb-3 font-mono text-[11px] tracking-[0.1em] ${tagColor}`}>
+                {product.tag}
+              </StaggerItem>
+              <StaggerItem>
+                <h1 className="mb-5 font-display text-[clamp(36px,4.4vw,56px)] font-extrabold leading-[0.98]">
+                  {product.title}
+                </h1>
+              </StaggerItem>
+              <StaggerItem>
+                <p className="mb-8 max-w-md text-[15px] leading-relaxed text-muted">
+                  {product.intro}
+                </p>
+              </StaggerItem>
 
-            {product.warning && (
-              <div className="mb-8 rounded-xl border border-amber/30 bg-amber/[0.06] px-5 py-4 font-mono text-[12.5px] text-amber">
-                ⚠ {product.warning}
-              </div>
-            )}
+              {product.warning && (
+                <StaggerItem className="mb-8 rounded-xl border border-amber/30 bg-amber/[0.06] px-5 py-4 font-mono text-[12.5px] text-amber">
+                  ⚠ {product.warning}
+                </StaggerItem>
+              )}
 
-            <div className="mb-8">
-              <div className="mb-3 font-mono text-[11px] tracking-[0.1em] text-muted">
-                DEMOS — made entirely with this pack
-              </div>
-              <div className="overflow-hidden rounded-xl border border-line">
-                <iframe
-                  title={`${product.title} — SoundCloud demos`}
-                  width="100%"
-                  height="220"
-                  scrolling="no"
-                  frameBorder="no"
-                  allow="autoplay"
-                  src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(
-                    product.soundcloudUrl
-                  )}&color=%23ff2e3e&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false`}
-                />
-              </div>
-            </div>
+              <StaggerItem className="mb-8">
+                <div className="mb-3 font-mono text-[11px] tracking-[0.1em] text-muted">
+                  DEMOS — made entirely with this pack
+                </div>
+                <div className="overflow-hidden rounded-xl border border-line">
+                  <iframe
+                    title={`${product.title} — SoundCloud demos`}
+                    width="100%"
+                    height="220"
+                    scrolling="no"
+                    frameBorder="no"
+                    allow="autoplay"
+                    src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(
+                      product.soundcloudUrl
+                    )}&color=%23ff2e3e&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false`}
+                  />
+                </div>
+              </StaggerItem>
 
-            <div className="mt-auto flex flex-col gap-4 border-t border-line pt-7">
-              <div className="flex items-baseline justify-between">
-                <span className="font-mono text-[13px] text-muted">Price</span>
-                <span className="font-display text-3xl font-extrabold">{product.price}</span>
-              </div>
-              <ParticleButton variant="signal" size="lg" className="w-full font-mono text-[13.5px]">
-                Buy now
-              </ParticleButton>
-              <p className="text-center font-mono text-[11px] text-muted-2">
-                {product.deliveryNote}
-              </p>
-            </div>
+              <StaggerItem className="mt-auto flex flex-col gap-4 border-t border-line pt-7">
+                <div className="flex items-baseline justify-between">
+                  <span className="font-mono text-[13px] text-muted">Price</span>
+                  <span className="font-display text-3xl font-extrabold">{product.price}</span>
+                </div>
+                <ParticleButton variant="signal" size="lg" className="w-full font-mono text-[13.5px]">
+                  Buy now
+                </ParticleButton>
+                <p className="text-center font-mono text-[11px] text-muted-2">
+                  {product.deliveryNote}
+                </p>
+              </StaggerItem>
+            </Stagger>
           </div>
         </div>
 
@@ -116,9 +123,9 @@ export default async function ProductPage({
             <span className="font-mono text-[13px] tracking-wide text-signal">CONTENTS</span>
             <span className="h-px flex-1 bg-line" />
           </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <Stagger className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {product.contents.map((group) => (
-              <div
+              <StaggerItem
                 key={group.count}
                 className="rounded-2xl border border-line bg-panel p-6"
               >
@@ -136,9 +143,9 @@ export default async function ProductPage({
                     </li>
                   ))}
                 </ul>
-              </div>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </div>
 

@@ -9,6 +9,7 @@ import ScrollProgress from "@/components/scroll-progress";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import RecDot from "@/components/rec-dot";
+import { Stagger, StaggerItem } from "@/components/stagger";
 import { products } from "@/lib/products";
 
 const packs: Product[] = products.map((p) => ({
@@ -65,21 +66,25 @@ export default function Home() {
 
       {/* ---------- HERO (real Beams Background, recolored to brand) ---------- */}
       <BeamsBackground intensity="medium" className="pb-24 pt-24">
-        <div className="mx-auto max-w-[1180px] px-8">
-          <div className="mb-7 flex items-center gap-2.5 font-mono text-[13px] tracking-[0.08em] text-muted">
+        <Stagger className="mx-auto max-w-[1180px] px-8">
+          <StaggerItem className="mb-7 flex items-center gap-2.5 font-mono text-[13px] tracking-[0.08em] text-muted">
             <RecDot /> SIGNAL IN — WAVAUDIOLAB STUDIO, SWITZERLAND
-          </div>
-          <h1 className="max-w-[920px] font-display text-[clamp(52px,7.4vw,108px)] font-extrabold leading-[0.94] tracking-[0.005em]">
-            Your track,<br />
-            <span className="text-signal">engineered to translate.</span>
-          </h1>
-          <p className="mt-6 max-w-[520px] text-[17px] text-muted">
-            Mixing and mastering for hard techno and beyond, run out of a real
-            studio with real hardware — not a preset chain. Calibrated
-            monitoring, three rounds of revisions, and a straight answer on
-            what your track actually needs.
-          </p>
-          <div className="mt-9 flex flex-wrap gap-3.5">
+          </StaggerItem>
+          <StaggerItem>
+            <h1 className="max-w-[920px] font-display text-[clamp(52px,7.4vw,108px)] font-extrabold leading-[0.94] tracking-[0.005em]">
+              Your track,<br />
+              <span className="text-signal">engineered to translate.</span>
+            </h1>
+          </StaggerItem>
+          <StaggerItem>
+            <p className="mt-6 max-w-[520px] text-[17px] text-muted">
+              Mixing and mastering for hard techno and beyond, run out of a real
+              studio with real hardware — not a preset chain. Calibrated
+              monitoring, three rounds of revisions, and a straight answer on
+              what your track actually needs.
+            </p>
+          </StaggerItem>
+          <StaggerItem className="mt-9 flex flex-wrap gap-3.5">
             <ParticleButton variant="signal" size="lg" className="font-mono text-[13.5px]">
               Start a project
             </ParticleButton>
@@ -89,16 +94,16 @@ export default function Home() {
             >
               Get a quote
             </a>
-          </div>
-        </div>
+          </StaggerItem>
+        </Stagger>
       </BeamsBackground>
 
       {/* ---------- STAGE 01 — MIXING ---------- */}
       <section className="border-t border-line py-24" id="mixing">
         <div className="mx-auto max-w-[1180px] px-8">
           <StageHead num="STAGE 01" label="MIXING" />
-          <div className="grid items-start gap-[70px] md:grid-cols-[1.1fr_.9fr]">
-            <div>
+          <Stagger className="grid items-start gap-[70px] md:grid-cols-[1.1fr_.9fr]">
+            <StaggerItem>
               <h2 className="max-w-[460px] font-display text-[clamp(34px,4vw,54px)] font-extrabold leading-[0.94]">
                 Balance, space, and punch — before mastering ever touches it.
               </h2>
@@ -113,8 +118,8 @@ export default function Home() {
               >
                 Send your stems →
               </a>
-            </div>
-            <div className="rounded-2xl border border-line bg-panel px-7 py-6">
+            </StaggerItem>
+            <StaggerItem className="rounded-2xl border border-line bg-panel px-7 py-6">
               <SpecRow k="Up to 9 channels" v="100 CHF" />
               <SpecRow k="Up to 14 channels" v="125 CHF" />
               <SpecRow k="Up to 19 channels" v="150 CHF" />
@@ -125,8 +130,8 @@ export default function Home() {
                 Monitoring calibrated with Sonarworks Reference 4. Revisions
                 included until it&apos;s right.
               </p>
-            </div>
-          </div>
+            </StaggerItem>
+          </Stagger>
         </div>
       </section>
 
@@ -134,8 +139,8 @@ export default function Home() {
       <section className="border-t border-line py-24" id="mastering">
         <div className="mx-auto max-w-[1180px] px-8">
           <StageHead num="STAGE 02" label="MASTERING" />
-          <div className="grid items-start gap-[70px] md:grid-cols-[.9fr_1.1fr]">
-            <div className="rounded-2xl border border-line bg-panel px-7 py-6 md:order-2">
+          <Stagger className="grid items-start gap-[70px] md:grid-cols-[.9fr_1.1fr]">
+            <StaggerItem className="rounded-2xl border border-line bg-panel px-7 py-6 md:order-2">
               <SpecRow k="Mastering, per track" v="25 CHF" />
               <SpecRow k="Stem mastering, per track" v="50 CHF" />
               <SpecRow k="Turnaround" v="Typically 2–4 days" hi />
@@ -144,8 +149,8 @@ export default function Home() {
                 Delivered with your loudness target hit and logged, not
                 guessed at.
               </p>
-            </div>
-            <div className="md:order-1">
+            </StaggerItem>
+            <StaggerItem className="md:order-1">
               <h2 className="max-w-[460px] font-display text-[clamp(34px,4vw,54px)] font-extrabold leading-[0.94]">
                 Loud where it counts, clean everywhere else.
               </h2>
@@ -161,8 +166,8 @@ export default function Home() {
               >
                 Send your premaster →
               </a>
-            </div>
-          </div>
+            </StaggerItem>
+          </Stagger>
         </div>
       </section>
 
@@ -170,7 +175,11 @@ export default function Home() {
       <section className="border-t border-line py-24" id="packs">
         <div className="mx-auto max-w-[1180px] px-8">
           <StageHead num="STAGE 03" label="SAMPLE PACKS — OUTPUT" />
-          <ProductGrid products={packs} />
+          <Stagger>
+            <StaggerItem>
+              <ProductGrid products={packs} />
+            </StaggerItem>
+          </Stagger>
         </div>
       </section>
 
@@ -184,8 +193,8 @@ export default function Home() {
               THE LAB — SIGNAL SOURCE
             </span>
           </div>
-          <div className="grid gap-[70px] md:grid-cols-[.85fr_1.15fr]">
-            <div>
+          <Stagger className="grid gap-[70px] md:grid-cols-[.85fr_1.15fr]">
+            <StaggerItem>
               <h2 className="font-display text-[clamp(32px,3.6vw,46px)] font-extrabold leading-[0.96] text-paper-ink">
                 Real hardware. Real signal path.
               </h2>
@@ -201,8 +210,8 @@ export default function Home() {
                 <b className="mb-1 block text-[14px] text-paper-ink">Florian Schären</b>
                 .wav_909 — Rolle, Switzerland
               </div>
-            </div>
-            <div className="grid grid-cols-1 gap-x-10 sm:grid-cols-2">
+            </StaggerItem>
+            <StaggerItem className="grid grid-cols-1 gap-x-10 sm:grid-cols-2">
               <GearGroup
                 title="MODULAR & SYNTHESIS"
                 items={["648HP modular system", "Behringer Model D", "Arturia MicroFreak", "Custom modular voice rack"]}
@@ -219,28 +228,34 @@ export default function Home() {
                 title="SOFTWARE"
                 items={["Full mixing & mastering VST chain", "Ableton Live production environment"]}
               />
-            </div>
-          </div>
+            </StaggerItem>
+          </Stagger>
         </div>
       </section>
 
       {/* ---------- CONNECT ---------- */}
       <section className="px-8 py-24 text-center" id="connect">
-        <div className="mx-auto flex items-center justify-center gap-2.5 font-mono text-[13px] tracking-[0.08em] text-muted">
-          <RecDot /> SIGNAL OUT
-        </div>
-        <h2 className="mx-auto mt-5 max-w-[760px] font-display text-[clamp(40px,6vw,78px)] font-extrabold leading-[0.96]">
-          Ready to send your track through?
-        </h2>
-        <p className="mx-auto mt-4 max-w-[460px] text-muted">
-          Start a project or ask for a quote first — either way, you&apos;re
-          talking to the person who&apos;ll actually work on it.
-        </p>
-        <div className="mt-8 flex justify-center">
-          <ParticleButton variant="signal" size="lg" className="font-mono text-[13.5px]">
-            Start a project
-          </ParticleButton>
-        </div>
+        <Stagger>
+          <StaggerItem className="mx-auto flex items-center justify-center gap-2.5 font-mono text-[13px] tracking-[0.08em] text-muted">
+            <RecDot /> SIGNAL OUT
+          </StaggerItem>
+          <StaggerItem>
+            <h2 className="mx-auto mt-5 max-w-[760px] font-display text-[clamp(40px,6vw,78px)] font-extrabold leading-[0.96]">
+              Ready to send your track through?
+            </h2>
+          </StaggerItem>
+          <StaggerItem>
+            <p className="mx-auto mt-4 max-w-[460px] text-muted">
+              Start a project or ask for a quote first — either way, you&apos;re
+              talking to the person who&apos;ll actually work on it.
+            </p>
+          </StaggerItem>
+          <StaggerItem className="mt-8 flex justify-center">
+            <ParticleButton variant="signal" size="lg" className="font-mono text-[13.5px]">
+              Start a project
+            </ParticleButton>
+          </StaggerItem>
+        </Stagger>
       </section>
 
       <SiteFooter />

@@ -37,10 +37,11 @@ const packs: Product[] = [
   {
     title: "Racks Bundle",
     description:
-      "Just the Ableton racks from both volumes, for anyone who already has their own one-shots.",
+      "20 Ableton effect racks from both volumes, for anyone who already has their own one-shots.",
     price: "11.99 CHF",
     tag: "ABLETON RACKS ONLY",
     tagColor: "signal",
+    image: "/packs/racks-bundle.png",
   },
 ];
 

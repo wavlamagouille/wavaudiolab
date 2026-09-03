@@ -33,7 +33,29 @@ export default function StageStack({
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const isDesktop = window.matchMedia("(min-width: 1024px)").matches;
-    if (reduceMotion || !isDesktop) return;
+
+    if (isDesktop) {
+      // set the scroll-multiplier height only on desktop, where the
+      // sticky/pinned layout actually applies
+      wrap.style.height = `${stages.length * 100}vh`;
+    }
+
+    if (reduceMotion) {
+      // the lg: CSS classes hide every stage but the first via a pure
+      // media query, independent of JS — if this effect stopped here for
+      // reduced-motion users on a desktop-width screen, stages 2+ would
+      // stay invisible forever with nothing left to reveal them. Force
+      // every layer visible and drop the pinned layout entirely instead.
+      wrap.style.height = "auto";
+      layerRefs.current.forEach((layer) => {
+        if (!layer) return;
+        layer.style.opacity = "1";
+        layer.style.position = "static";
+      });
+      return;
+    }
+
+    if (!isDesktop) return;
 
     const n = stages.length;
     const segment = 100 / n;
@@ -81,7 +103,7 @@ export default function StageStack({
   }, [stages.length]);
 
   return (
-    <div ref={wrapRef} id={id} className="relative lg:h-[300vh]">
+    <div ref={wrapRef} id={id} className="relative lg:h-[500vh]">
       <div className="lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden">
         {stages.map((stage, i) => (
           <div

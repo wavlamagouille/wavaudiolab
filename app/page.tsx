@@ -6,8 +6,6 @@ import ScrollProgress from "@/components/scroll-progress";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import RecDot from "@/components/rec-dot";
-import { Stagger, StaggerItem } from "@/components/stagger";
-import ScrollReveal from "@/components/scroll-reveal";
 import StageStack from "@/components/stage-stack";
 import CountUp from "@/components/count-up";
 import { products } from "@/lib/products";
@@ -30,44 +28,36 @@ export default function Home() {
       {/* ---------- NAV ---------- */}
       <SiteHeader />
 
-      {/* ---------- HERO ---------- */}
-      <div className="pb-24 pt-24">
-        <Stagger className="mx-auto max-w-[1180px] px-8">
-          <StaggerItem className="mb-7 flex items-center gap-2.5 font-mono text-[13px] tracking-[0.08em] text-muted">
-            <RecDot /> SIGNAL IN — WAVAUDIOLAB STUDIO, SWITZERLAND
-          </StaggerItem>
-          <StaggerItem>
+      {/* ---------- HERO / MIXING / MASTERING / PACKS / CONNECT — sticky crossfade on desktop ---------- */}
+      <StageStack
+        id="mixing"
+        stages={[
+          <div key="hero" className="mx-auto max-w-[1180px] px-8">
+            <div className="mb-7 flex items-center gap-2.5 font-mono text-[13px] tracking-[0.08em] text-muted">
+              <RecDot /> SIGNAL IN — WAVAUDIOLAB STUDIO, SWITZERLAND
+            </div>
             <h1 className="max-w-[920px] font-display text-[clamp(52px,7.4vw,108px)] font-extrabold leading-[0.94] tracking-[0.005em]">
               Your track,<br />
               <span className="text-signal">engineered to translate.</span>
             </h1>
-          </StaggerItem>
-          <StaggerItem>
             <p className="mt-6 max-w-[520px] text-[17px] text-muted">
               Mixing and mastering for hard techno and beyond, run out of a real
               studio with real hardware — not a preset chain. Calibrated
               monitoring, three rounds of revisions, and a straight answer on
               what your track actually needs.
             </p>
-          </StaggerItem>
-          <StaggerItem className="mt-9 flex flex-wrap gap-3.5">
-            <ParticleButton variant="signal" size="lg" className="font-mono text-[13.5px]">
-              Start a project
-            </ParticleButton>
-            <a
-              className="inline-flex items-center gap-2 rounded-full border border-line-2 px-6 py-[15px] font-mono text-[13.5px] transition-colors hover:border-text"
-              href="#connect"
-            >
-              Get a quote
-            </a>
-          </StaggerItem>
-        </Stagger>
-      </div>
-
-      {/* ---------- MIXING / MASTERING / PACKS — sticky crossfade on desktop ---------- */}
-      <StageStack
-        id="mixing"
-        stages={[
+            <div className="mt-9 flex flex-wrap gap-3.5">
+              <ParticleButton variant="signal" size="lg" className="font-mono text-[13.5px]">
+                Start a project
+              </ParticleButton>
+              <a
+                className="inline-flex items-center gap-2 rounded-full border border-line-2 px-6 py-[15px] font-mono text-[13.5px] transition-colors hover:border-text"
+                href="#connect"
+              >
+                Get a quote
+              </a>
+            </div>
+          </div>,
           <div key="mixing" className="grid items-start gap-[70px] md:grid-cols-[1.1fr_.9fr]">
             <div>
               <h2 className="max-w-[460px] font-display text-[clamp(34px,4vw,54px)] font-extrabold leading-[0.94]">
@@ -130,76 +120,25 @@ export default function Home() {
           <div key="packs">
             <ProductGrid products={packs} />
           </div>,
-        ]}
-      />
-
-      {/* ---------- THE LAB (inverted paper panel) ---------- */}
-      <section className="bg-paper py-24 text-paper-ink" id="lab">
-        <div className="mx-auto max-w-[1180px] px-8">
-          <ScrollReveal className="grid gap-[70px] md:grid-cols-[.85fr_1.15fr]">
-            <div>
-              <h2 className="font-display text-[clamp(32px,3.6vw,46px)] font-extrabold leading-[0.96] text-paper-ink">
-                Real hardware. Real signal path.
-              </h2>
-              <p className="mt-5 max-w-[420px] text-[15px] text-[#4a473f]">
-                Wavaudiolab is run by Florian Schären — SAE Institute
-                Geneva-trained sound engineer, producer, and live act working
-                mainly in hard techno and schranz. Every mix and master
-                passes through monitoring calibrated with Sonarworks
-                Reference 4, so what you hear here is close to what you&apos;ll
-                hear anywhere.
-              </p>
-              <div className="mt-6 font-mono text-[12.5px] text-[#7a756a]">
-                <b className="mb-1 block text-[14px] text-paper-ink">Florian Schären</b>
-                .wav_909 — Rolle, Switzerland
-              </div>
+          <div key="connect" id="connect" className="mx-auto max-w-[1180px] px-8 text-center">
+            <div className="mx-auto flex items-center justify-center gap-2.5 font-mono text-[13px] tracking-[0.08em] text-muted">
+              <RecDot /> SIGNAL OUT
             </div>
-            <div className="grid grid-cols-1 gap-x-10 sm:grid-cols-2">
-              <GearGroup
-                title="MODULAR & SYNTHESIS"
-                items={["648HP modular system", "Behringer Model D", "Arturia MicroFreak", "Custom modular voice rack"]}
-              />
-              <GearGroup
-                title="DRUM MACHINES & SAMPLERS"
-                items={["Elektron Analog Rytm MKII", "Elektron Digitakt", "AKAI Force", "1010music Bitbox"]}
-              />
-              <GearGroup
-                title="MONITORING"
-                items={["Yamaha HS8 monitors", "Sonarworks Reference 4", "Beyerdynamic DT 770 Pro"]}
-              />
-              <GearGroup
-                title="SOFTWARE"
-                items={["Full mixing & mastering VST chain", "Ableton Live production environment"]}
-              />
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* ---------- CONNECT ---------- */}
-      <section className="px-8 py-24 text-center" id="connect">
-        <ScrollReveal>
-          <div className="mx-auto flex items-center justify-center gap-2.5 font-mono text-[13px] tracking-[0.08em] text-muted">
-            <RecDot /> SIGNAL OUT
-          </div>
-          <div>
             <h2 className="mx-auto mt-5 max-w-[760px] font-display text-[clamp(40px,6vw,78px)] font-extrabold leading-[0.96]">
               Ready to send your track through?
             </h2>
-          </div>
-          <div>
             <p className="mx-auto mt-4 max-w-[460px] text-muted">
               Start a project or ask for a quote first — either way, you&apos;re
               talking to the person who&apos;ll actually work on it.
             </p>
-          </div>
-          <div className="mt-8 flex justify-center">
-            <ParticleButton variant="signal" size="lg" className="font-mono text-[13.5px]">
-              Start a project
-            </ParticleButton>
-          </div>
-        </ScrollReveal>
-      </section>
+            <div className="mt-8 flex justify-center">
+              <ParticleButton variant="signal" size="lg" className="font-mono text-[13.5px]">
+                Start a project
+              </ParticleButton>
+            </div>
+          </div>,
+        ]}
+      />
 
       <SiteFooter />
     </>
@@ -233,15 +172,4 @@ function SpecRow({
   );
 }
 
-function GearGroup({ title, items }: { title: string; items: string[] }) {
-  return (
-    <div className="border-b border-paper-line py-4">
-      <h4 className="mb-2.5 font-mono text-[11px] tracking-[0.08em] text-[#9a9484]">{title}</h4>
-      <ul className="space-y-1.5 text-[13.5px] text-[#33312b]">
-        {items.map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
+

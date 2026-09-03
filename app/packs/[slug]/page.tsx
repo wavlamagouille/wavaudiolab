@@ -96,6 +96,25 @@ export default async function ProductPage({
               </div>
             )}
 
+            <div className="mb-8">
+              <div className="mb-3 font-mono text-[11px] tracking-[0.1em] text-muted">
+                DEMOS — made entirely with this pack
+              </div>
+              <div className="overflow-hidden rounded-xl border border-line">
+                <iframe
+                  title={`${product.title} — SoundCloud demos`}
+                  width="100%"
+                  height="220"
+                  scrolling="no"
+                  frameBorder="no"
+                  allow="autoplay"
+                  src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(
+                    product.soundcloudUrl
+                  )}&color=%23ff2e3e&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false`}
+                />
+              </div>
+            </div>
+
             <div className="mt-auto flex flex-col gap-4 border-t border-line pt-7">
               <div className="flex items-baseline justify-between">
                 <span className="font-mono text-[13px] text-muted">Price</span>
@@ -139,30 +158,6 @@ export default async function ProductPage({
                 </ul>
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* ---------- SOUNDCLOUD DEMOS ---------- */}
-        <div className="mt-20 border-t border-line pt-14">
-          <div className="mb-8 flex items-baseline gap-4">
-            <span className="font-mono text-[13px] tracking-wide text-signal">DEMOS</span>
-            <span className="h-px flex-1 bg-line" />
-          </div>
-          <p className="mb-6 max-w-lg text-[14px] text-muted">
-            All demo tracks are made entirely using the samples and effect racks in this pack.
-          </p>
-          <div className="overflow-hidden rounded-2xl border border-line">
-            <iframe
-              title={`${product.title} — SoundCloud demos`}
-              width="100%"
-              height="300"
-              scrolling="no"
-              frameBorder="no"
-              allow="autoplay"
-              src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(
-                product.soundcloudUrl
-              )}&color=%23ff2e3e&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false`}
-            />
           </div>
         </div>
       </div>

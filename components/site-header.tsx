@@ -10,8 +10,8 @@ export default function SiteHeader() {
         </Link>
         <nav className="hidden gap-8 font-mono text-[13px] tracking-wide text-muted md:flex">
           <Link className="transition-colors hover:text-text" href="/#mixing">Mixing</Link>
-          <Link className="transition-colors hover:text-text" href="/#mastering">Mastering</Link>
-          <Link className="transition-colors hover:text-text" href="/#packs">Packs</Link>
+          <Link className="transition-colors hover:text-text" href="/#mixing">Mastering</Link>
+          <Link className="transition-colors hover:text-text" href="/#mixing">Packs</Link>
           <Link className="transition-colors hover:text-text" href="/#lab">The Lab</Link>
         </nav>
         <Link

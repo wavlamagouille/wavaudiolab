@@ -9,6 +9,7 @@ import SiteFooter from "@/components/site-footer";
 import RecDot from "@/components/rec-dot";
 import { Stagger, StaggerItem } from "@/components/stagger";
 import ScrollReveal from "@/components/scroll-reveal";
+import StageStack from "@/components/stage-stack";
 import CountUp from "@/components/count-up";
 import { products } from "@/lib/products";
 
@@ -64,10 +65,11 @@ export default function Home() {
         </Stagger>
       </BeamsBackground>
 
-      {/* ---------- STAGE 01 — MIXING ---------- */}
-      <section className="py-24" id="mixing">
-        <div className="mx-auto max-w-[1180px] px-8">
-          <ScrollReveal className="grid items-start gap-[70px] md:grid-cols-[1.1fr_.9fr]">
+      {/* ---------- MIXING / MASTERING / PACKS — sticky crossfade on desktop ---------- */}
+      <StageStack
+        id="mixing"
+        stages={[
+          <div key="mixing" className="grid items-start gap-[70px] md:grid-cols-[1.1fr_.9fr]">
             <div>
               <h2 className="max-w-[460px] font-display text-[clamp(34px,4vw,54px)] font-extrabold leading-[0.94]">
                 Balance, space, and punch — before mastering ever touches it.
@@ -96,14 +98,8 @@ export default function Home() {
                 included until it&apos;s right.
               </p>
             </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* ---------- STAGE 02 — MASTERING (flipped) ---------- */}
-      <section className="py-24" id="mastering">
-        <div className="mx-auto max-w-[1180px] px-8">
-          <ScrollReveal className="grid items-start gap-[70px] md:grid-cols-[.9fr_1.1fr]">
+          </div>,
+          <div key="mastering" className="grid items-start gap-[70px] md:grid-cols-[.9fr_1.1fr]">
             <div className="rounded-2xl border border-line bg-panel px-7 py-6 md:order-2">
               <SpecRow k="Mastering, per track" count={25} suffix=" CHF" />
               <SpecRow k="Stem mastering, per track" count={50} suffix=" CHF" />
@@ -131,20 +127,12 @@ export default function Home() {
                 Send your premaster →
               </a>
             </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* ---------- STAGE 03 — SAMPLE PACKS (real product photography) ---------- */}
-      <section className="py-24" id="packs">
-        <div className="mx-auto max-w-[1180px] px-8">
-          <ScrollReveal>
-            <div>
-              <ProductGrid products={packs} />
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
+          </div>,
+          <div key="packs">
+            <ProductGrid products={packs} />
+          </div>,
+        ]}
+      />
 
       {/* ---------- THE LAB (inverted paper panel) ---------- */}
       <section className="bg-paper py-24 text-paper-ink" id="lab">

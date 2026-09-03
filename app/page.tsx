@@ -15,6 +15,7 @@ const packs: Product[] = [
     price: "29.99 CHF",
     tag: "RACKS + LOOPS + ONE-SHOTS",
     tagColor: "signal",
+    image: "/packs/essential-tools-vol1.png",
   },
   {
     title: "Essential Tools Vol. 2",

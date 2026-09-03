@@ -10,13 +10,12 @@ export interface Product {
   tag: string;
   tagColor?: "signal" | "amber";
   image?: string; // path in /public, e.g. "/packs/essential-tools-vol2.png"
-  // Set true for shots wider than a single-box portrait (e.g. a two-box
-  // bundle) — instead of a fixed short aspect ratio (which made the card
-  // itself shorter than its neighbors), the image area fills whatever
-  // height the grid row actually establishes, so it matches every other
-  // card's height exactly instead of guessing at a ratio.
-  wideImage?: boolean;
 }
+
+// One fixed height for every card's image area — same number for all four,
+// no exceptions. This is what actually guarantees titles line up: not a
+// ratio, not a flex-grow guess, just an identical number every card obeys.
+const IMAGE_HEIGHT = "clamp(210px, 26vw, 300px)";
 
 function ProductCard({ product }: { product: Product }) {
   const [hovered, setHovered] = useState(false);
@@ -24,16 +23,13 @@ function ProductCard({ product }: { product: Product }) {
 
   return (
     <div
-      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/8 bg-white/[0.03] transition-colors duration-300 hover:border-white/16"
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/8 bg-white/[0.03] transition-colors duration-300 hover:border-white/16"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       <div
-        className={
-          product.wideImage
-            ? "relative min-h-[160px] w-full flex-1 overflow-hidden bg-panel-2"
-            : "relative aspect-[4/5] w-full flex-none overflow-hidden bg-panel-2"
-        }
+        className="relative w-full flex-none overflow-hidden bg-panel-2"
+        style={{ height: IMAGE_HEIGHT }}
       >
         {product.image ? (
           <>

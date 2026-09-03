@@ -1,62 +1,38 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { usePathname } from "next/navigation";
-import { animate, stagger } from "animejs";
 
-const BAR_COUNT = 48;
-
-// A waveform sweep, not a flat panel: each bar grows to full height in a
-// staggered wave (left to right), holds as a solid wall for a beat, then
-// shrinks back down in a staggered wave from the center outward — revealing
-// the new page as it goes. The page content underneath swaps the instant
-// the route changes (React does this synchronously on re-render), so by
-// the time the bars are even halfway up, the new page is already sitting
-// there waiting — the animation never has to race the content.
+// A real shared-element transition, not a screen-covering effect: the
+// product image itself (same layoutId on the grid card and the detail
+// page's hero) is the thing that actually moves and resizes between pages
+// — Motion measures its position/size on the outgoing page and the
+// incoming page, then animates continuously between the two. Everything
+// else on the page does a quick crossfade underneath it. `popLayout` mode
+// is what makes this possible: it lets the outgoing page keep animating
+// out while the incoming page is already mounted and laying out, which is
+// the overlap Motion needs to compute the shared-element handoff. `mode:
+// "wait"` would fully remove the old page before the new one exists —
+// no overlap, no shared element to match against.
 export default function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const barsRef = useRef<HTMLDivElement>(null);
-  const isFirstRender = useRef(true);
+  const reduceMotion = useReducedMotion();
 
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion || !barsRef.current) return;
-
-    const bars = barsRef.current.children;
-
-    animate(bars, {
-      scaleY: [
-        { to: 1, duration: 280, ease: "outExpo" },
-        { to: 0, duration: 380, delay: 260, ease: "inOutQuad" },
-      ],
-      delay: stagger(5, { from: "first" }),
-    });
-  }, [pathname]);
+  if (reduceMotion) {
+    return <>{children}</>;
+  }
 
   return (
-    <>
-      <div key={pathname}>{children}</div>
-      <div
-        ref={barsRef}
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-[100] flex"
+    <AnimatePresence mode="popLayout" initial={false}>
+      <motion.div
+        key={pathname}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.28, ease: "easeInOut" }}
       >
-        {Array.from({ length: BAR_COUNT }).map((_, i) => (
-          <span
-            key={i}
-            className={
-              i % 5 === 0
-                ? "h-full flex-1 origin-center bg-amber"
-                : "h-full flex-1 origin-center bg-signal"
-            }
-            style={{ transform: "scaleY(0)" }}
-          />
-        ))}
-      </div>
-    </>
+        {children}
+      </motion.div>
+    </AnimatePresence>
   );
 }

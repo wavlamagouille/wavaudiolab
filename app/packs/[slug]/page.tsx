@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import ParticleButton from "@/components/kokonutui/particle-button";
+import ProductHeroImage from "@/components/product-hero-image";
 import { products, getProduct } from "@/lib/products";
 
 export const dynamicParams = false;
@@ -52,32 +52,12 @@ export default async function ProductPage({
 
         {/* ---------- HERO: image + summary ---------- */}
         <div className="grid gap-14 md:grid-cols-2">
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl border border-line bg-panel">
-            <div
-              className="absolute inset-0 opacity-30 blur-3xl"
-              style={{
-                background:
-                  product.tagColor === "amber"
-                    ? "radial-gradient(circle at 50% 55%, #ffb020, transparent 70%)"
-                    : "radial-gradient(circle at 50% 55%, #ff2e3e, transparent 70%)",
-              }}
-            />
-            {product.image ? (
-              <Image
-                src={product.image}
-                alt={product.title}
-                fill
-                className="relative object-contain p-10"
-                sizes="(max-width: 768px) 90vw, 45vw"
-                priority
-              />
-            ) : (
-              <div className="relative flex h-full w-full flex-col items-center justify-center gap-3 text-muted-2">
-                <span className="font-display text-4xl font-extrabold text-line-2">W</span>
-                <span className="font-mono text-[10.5px] tracking-[0.1em]">ART PENDING</span>
-              </div>
-            )}
-          </div>
+          <ProductHeroImage
+            slug={product.slug}
+            image={product.image}
+            title={product.title}
+            tagColor={product.tagColor}
+          />
 
           <div className="flex flex-col">
             <div className={`mb-3 font-mono text-[11px] tracking-[0.1em] ${tagColor}`}>

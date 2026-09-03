@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "motion/react";
 import { useState } from "react";
 
 export interface Product {
@@ -45,13 +46,15 @@ function ProductCard({ product }: { product: Product }) {
                     : "radial-gradient(circle at 50% 60%, #ff2e3e, transparent 70%)",
               }}
             />
-            <Image
-              src={product.image}
-              alt={product.title}
-              fill
-              className="relative object-contain p-6 transition-transform duration-500 group-hover:scale-[1.03]"
-              sizes="(max-width: 768px) 50vw, 25vw"
-            />
+            <motion.div layoutId={`pack-image-${product.slug}`} className="absolute inset-0">
+              <Image
+                src={product.image}
+                alt={product.title}
+                fill
+                className="relative object-contain p-6 transition-transform duration-500 group-hover:scale-[1.03]"
+                sizes="(max-width: 768px) 50vw, 25vw"
+              />
+            </motion.div>
           </>
         ) : (
           <div className="flex h-full w-full flex-col items-center justify-center gap-3 text-muted-2">

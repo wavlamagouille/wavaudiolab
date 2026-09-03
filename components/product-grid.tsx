@@ -1,9 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 export interface Product {
+  slug: string;
   title: string;
   description: string;
   price: string;
@@ -22,7 +24,8 @@ function ProductCard({ product }: { product: Product }) {
   const tagColor = product.tagColor === "amber" ? "text-amber" : "text-signal";
 
   return (
-    <div
+    <Link
+      href={`/packs/${product.slug}`}
       className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/8 bg-white/[0.03] transition-colors duration-300 hover:border-white/16"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -72,7 +75,7 @@ function ProductCard({ product }: { product: Product }) {
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -80,7 +83,7 @@ export default function ProductGrid({ products }: { products: Product[] }) {
   return (
     <div className="grid grid-cols-2 items-stretch gap-4 md:grid-cols-4">
       {products.map((p) => (
-        <ProductCard key={p.title} product={p} />
+        <ProductCard key={p.slug} product={p} />
       ))}
     </div>
   );

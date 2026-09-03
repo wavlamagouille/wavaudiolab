@@ -10,6 +10,7 @@ import "@fontsource/ibm-plex-sans/400";
 import "@fontsource/ibm-plex-sans/500";
 import "@fontsource/ibm-plex-sans/600";
 import "./globals.css";
+import PageTransition from "@/components/page-transition";
 
 export const metadata: Metadata = {
   title: "Wavaudiolab — Mixing & Mastering Studio",
@@ -20,7 +21,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className="min-h-full bg-ink text-text">{children}</body>
+      <body className="min-h-full bg-ink text-text">
+        <PageTransition>{children}</PageTransition>
+      </body>
     </html>
   );
 }

@@ -6,53 +6,20 @@ import BeamsBackground from "@/components/kokonutui/beams-background";
 import ParticleButton from "@/components/kokonutui/particle-button";
 import ProductGrid, { type Product } from "@/components/product-grid";
 import ScrollProgress from "@/components/scroll-progress";
+import SiteHeader from "@/components/site-header";
+import SiteFooter from "@/components/site-footer";
+import RecDot from "@/components/rec-dot";
+import { products } from "@/lib/products";
 
-const packs: Product[] = [
-  {
-    title: "Essential Tools Vol. 1",
-    description:
-      "Ableton racks, loops, and one-shots built from the modular rig — hard techno and schranz-leaning.",
-    price: "29.99 CHF",
-    tag: "RACKS + LOOPS + ONE-SHOTS",
-    tagColor: "signal",
-    image: "/packs/essential-tools-vol1.png",
-  },
-  {
-    title: "Essential Tools Vol. 2",
-    description:
-      "A second round — new textures, new racks, same signal chain, no repeats from Vol. 1.",
-    price: "29.99 CHF",
-    tag: "RACKS + LOOPS + ONE-SHOTS",
-    tagColor: "signal",
-    image: "/packs/essential-tools-vol2.png",
-  },
-  {
-    title: "Vol. 1 + 2 Bundle",
-    description: "Both packs together, 25% off buying them one at a time.",
-    price: "44.99 CHF",
-    tag: "25% OFF BUNDLED",
-    tagColor: "amber",
-    image: "/packs/bundle.png",
-  },
-  {
-    title: "Racks Bundle",
-    description:
-      "20 Ableton effect racks from both volumes, for anyone who already has their own one-shots.",
-    price: "11.99 CHF",
-    tag: "ABLETON RACKS ONLY",
-    tagColor: "signal",
-    image: "/packs/racks-bundle.png",
-  },
-];
-
-function RecDot() {
-  return (
-    <span className="relative inline-flex h-2 w-2 flex-none">
-      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-signal opacity-60" />
-      <span className="relative inline-flex h-2 w-2 rounded-full bg-signal" />
-    </span>
-  );
-}
+const packs: Product[] = products.map((p) => ({
+  slug: p.slug,
+  title: p.title,
+  description: p.shortDescription,
+  price: p.price,
+  tag: p.tag,
+  tagColor: p.tagColor,
+  image: p.image,
+}));
 
 function StageHead({ num, label }: { num: string; label: string }) {
   return (
@@ -94,25 +61,7 @@ export default function Home() {
       <ScrollProgress />
 
       {/* ---------- NAV ---------- */}
-      <header className="sticky top-0 z-50 border-b border-line bg-ink/85 backdrop-blur-xl">
-        <div className="mx-auto flex h-[76px] max-w-[1180px] items-center justify-between px-8">
-          <div className="flex items-center gap-2.5 font-mono text-sm font-semibold tracking-[0.06em]">
-            <RecDot /> WAVAUDIOLAB
-          </div>
-          <nav className="hidden gap-8 font-mono text-[13px] tracking-wide text-muted md:flex">
-            <a className="transition-colors hover:text-text" href="#mixing">Mixing</a>
-            <a className="transition-colors hover:text-text" href="#mastering">Mastering</a>
-            <a className="transition-colors hover:text-text" href="#packs">Packs</a>
-            <a className="transition-colors hover:text-text" href="#lab">The Lab</a>
-          </nav>
-          <a
-            className="rounded-full border border-line-2 px-[18px] py-2.5 font-mono text-[13px] transition-colors hover:border-signal hover:text-signal"
-            href="#connect"
-          >
-            Start a project
-          </a>
-        </div>
-      </header>
+      <SiteHeader />
 
       {/* ---------- HERO (real Beams Background, recolored to brand) ---------- */}
       <BeamsBackground intensity="medium" className="pb-24 pt-24">
@@ -294,15 +243,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="border-t border-line px-8 py-8">
-        <div className="mx-auto flex max-w-[1180px] flex-col items-center justify-between gap-3.5 font-mono text-xs text-muted-2 md:flex-row">
-          <span>© Wavaudiolab, Rolle CH</span>
-          <div className="flex gap-5">
-            <a className="transition-colors hover:text-text" href="https://instagram.com/wavaudiolab" target="_blank" rel="noopener">Instagram</a>
-            <a className="transition-colors hover:text-text" href="#" target="_blank" rel="noopener">SoundCloud</a>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </>
   );
 }

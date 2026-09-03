@@ -33,7 +33,7 @@ const packs: Product[] = [
     tag: "25% OFF BUNDLED",
     tagColor: "amber",
     image: "/packs/bundle.png",
-    imageAspect: "5/4",
+    wideImage: true,
   },
   {
     title: "Racks Bundle",

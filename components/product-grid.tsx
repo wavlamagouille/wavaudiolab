@@ -10,7 +10,12 @@ export interface Product {
   tag: string;
   tagColor?: "signal" | "amber";
   image?: string; // path in /public, e.g. "/packs/essential-tools-vol2.png"
-  imageAspect?: string; // CSS aspect-ratio, e.g. "5/4" — for shots wider than a single-box portrait (default "4/5")
+  // Set true for shots wider than a single-box portrait (e.g. a two-box
+  // bundle) — instead of a fixed short aspect ratio (which made the card
+  // itself shorter than its neighbors), the image area fills whatever
+  // height the grid row actually establishes, so it matches every other
+  // card's height exactly instead of guessing at a ratio.
+  wideImage?: boolean;
 }
 
 function ProductCard({ product }: { product: Product }) {
@@ -19,13 +24,16 @@ function ProductCard({ product }: { product: Product }) {
 
   return (
     <div
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/8 bg-white/[0.03] transition-colors duration-300 hover:border-white/16"
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/8 bg-white/[0.03] transition-colors duration-300 hover:border-white/16"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       <div
-        className="relative w-full overflow-hidden bg-panel-2"
-        style={{ aspectRatio: product.imageAspect ?? "4/5" }}
+        className={
+          product.wideImage
+            ? "relative min-h-[160px] w-full flex-1 overflow-hidden bg-panel-2"
+            : "relative aspect-[4/5] w-full flex-none overflow-hidden bg-panel-2"
+        }
       >
         {product.image ? (
           <>
@@ -53,14 +61,14 @@ function ProductCard({ product }: { product: Product }) {
           </div>
         )}
       </div>
-      <div className="flex flex-1 flex-col p-5">
+      <div className="flex flex-none flex-col p-5">
         <div className={`mb-2 font-mono text-[10.5px] tracking-[0.08em] ${tagColor}`}>
           {product.tag}
         </div>
         <h3 className="mb-1.5 font-display text-[22px] font-bold leading-[1.05]">
           {product.title}
         </h3>
-        <p className="mb-4 flex-1 text-[13px] text-muted">{product.description}</p>
+        <p className="mb-4 text-[13px] text-muted">{product.description}</p>
         <div className="flex items-baseline justify-between border-t border-line pt-4 font-mono">
           <span className="text-[17px] text-text">{product.price}</span>
           <span className={`text-[12px] transition-transform ${hovered ? "translate-x-1" : ""} text-signal`}>
@@ -74,7 +82,7 @@ function ProductCard({ product }: { product: Product }) {
 
 export default function ProductGrid({ products }: { products: Product[] }) {
   return (
-    <div className="grid grid-cols-2 items-start gap-4 md:grid-cols-4">
+    <div className="grid grid-cols-2 items-stretch gap-4 md:grid-cols-4">
       {products.map((p) => (
         <ProductCard key={p.title} product={p} />
       ))}

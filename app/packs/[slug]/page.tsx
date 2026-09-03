@@ -6,6 +6,7 @@ import SiteFooter from "@/components/site-footer";
 import ParticleButton from "@/components/kokonutui/particle-button";
 import ProductHeroImage from "@/components/product-hero-image";
 import { Stagger, StaggerItem } from "@/components/stagger";
+import ScrollReveal from "@/components/scroll-reveal";
 import { products, getProduct } from "@/lib/products";
 
 export const dynamicParams = false;
@@ -123,9 +124,9 @@ export default async function ProductPage({
             <span className="font-mono text-[13px] tracking-wide text-signal">CONTENTS</span>
             <span className="h-px flex-1 bg-line" />
           </div>
-          <Stagger className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <ScrollReveal className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {product.contents.map((group) => (
-              <StaggerItem
+              <div
                 key={group.count}
                 className="rounded-2xl border border-line bg-panel p-6"
               >
@@ -143,9 +144,9 @@ export default async function ProductPage({
                     </li>
                   ))}
                 </ul>
-              </StaggerItem>
+              </div>
             ))}
-          </Stagger>
+          </ScrollReveal>
         </div>
       </div>
 

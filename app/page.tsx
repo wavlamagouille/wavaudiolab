@@ -1,41 +1,44 @@
 "use client";
 
-import { Disc3, Package, Music4, Layers3 } from "lucide-react";
 import { useEffect } from "react";
 import { animate, onScroll } from "animejs";
 import BeamsBackground from "@/components/kokonutui/beams-background";
 import ParticleButton from "@/components/kokonutui/particle-button";
-import SpotlightCards, { type SpotlightItem } from "@/components/kokonutui/spotlight-cards";
+import ProductGrid, { type Product } from "@/components/product-grid";
 import ScrollProgress from "@/components/scroll-progress";
 
-const packs: SpotlightItem[] = [
+const packs: Product[] = [
   {
-    icon: Music4,
     title: "Essential Tools Vol. 1",
     description:
-      "Ableton racks, loops, and one-shots built from the modular rig — hard techno and schranz-leaning. 29.99 CHF.",
-    color: "#ff2e3e",
+      "Ableton racks, loops, and one-shots built from the modular rig — hard techno and schranz-leaning.",
+    price: "29.99 CHF",
+    tag: "RACKS + LOOPS + ONE-SHOTS",
+    tagColor: "signal",
   },
   {
-    icon: Layers3,
     title: "Essential Tools Vol. 2",
     description:
-      "A second round — new textures, new racks, same signal chain, no repeats from Vol. 1. 29.99 CHF.",
-    color: "#ff2e3e",
+      "A second round — new textures, new racks, same signal chain, no repeats from Vol. 1.",
+    price: "29.99 CHF",
+    tag: "RACKS + LOOPS + ONE-SHOTS",
+    tagColor: "signal",
+    image: "/packs/essential-tools-vol2.png",
   },
   {
-    icon: Package,
     title: "Vol. 1 + 2 Bundle",
-    description:
-      "Both packs together, 25% off buying them one at a time. 44.99 CHF.",
-    color: "#ffb020",
+    description: "Both packs together, 25% off buying them one at a time.",
+    price: "44.99 CHF",
+    tag: "25% OFF BUNDLED",
+    tagColor: "amber",
   },
   {
-    icon: Disc3,
     title: "Racks Bundle",
     description:
-      "Just the Ableton racks from both volumes, for anyone who already has their own one-shots. 11.99 CHF.",
-    color: "#ff2e3e",
+      "Just the Ableton racks from both volumes, for anyone who already has their own one-shots.",
+    price: "11.99 CHF",
+    tag: "ABLETON RACKS ONLY",
+    tagColor: "signal",
   },
 ];
 
@@ -114,7 +117,7 @@ export default function Home() {
           <div className="mb-7 flex items-center gap-2.5 font-mono text-[13px] tracking-[0.08em] text-muted">
             <RecDot /> SIGNAL IN — WAVAUDIOLAB STUDIO, SWITZERLAND
           </div>
-          <h1 className="max-w-[920px] font-display text-[clamp(52px,7.4vw,108px)] font-800 leading-[0.94] tracking-[0.005em]">
+          <h1 className="max-w-[920px] font-display text-[clamp(52px,7.4vw,108px)] font-extrabold leading-[0.94] tracking-[0.005em]">
             Your track,<br />
             <span className="text-signal">engineered to translate.</span>
           </h1>
@@ -144,7 +147,7 @@ export default function Home() {
           <StageHead num="STAGE 01" label="MIXING" />
           <div className="grid items-start gap-[70px] md:grid-cols-[1.1fr_.9fr]">
             <div>
-              <h2 className="max-w-[460px] font-display text-[clamp(34px,4vw,54px)] font-800 leading-[0.94]">
+              <h2 className="max-w-[460px] font-display text-[clamp(34px,4vw,54px)] font-extrabold leading-[0.94]">
                 Balance, space, and punch — before mastering ever touches it.
               </h2>
               <p className="mt-5 max-w-[440px] text-[15.5px] text-muted">
@@ -191,7 +194,7 @@ export default function Home() {
               </p>
             </div>
             <div className="md:order-1">
-              <h2 className="max-w-[460px] font-display text-[clamp(34px,4vw,54px)] font-800 leading-[0.94]">
+              <h2 className="max-w-[460px] font-display text-[clamp(34px,4vw,54px)] font-extrabold leading-[0.94]">
                 Loud where it counts, clean everywhere else.
               </h2>
               <p className="mt-5 max-w-[440px] text-[15.5px] text-muted">
@@ -211,15 +214,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------- STAGE 03 — SAMPLE PACKS (real Spotlight Cards) ---------- */}
+      {/* ---------- STAGE 03 — SAMPLE PACKS (real product photography) ---------- */}
       <section className="border-t border-line py-24" id="packs">
         <div className="mx-auto max-w-[1180px] px-8">
           <StageHead num="STAGE 03" label="SAMPLE PACKS — OUTPUT" />
-          <SpotlightCards
-            items={packs}
-            eyebrow="Output"
-            heading="Sample packs from the same signal chain"
-          />
+          <ProductGrid products={packs} />
         </div>
       </section>
 
@@ -235,7 +234,7 @@ export default function Home() {
           </div>
           <div className="grid gap-[70px] md:grid-cols-[.85fr_1.15fr]">
             <div>
-              <h2 className="font-display text-[clamp(32px,3.6vw,46px)] font-800 leading-[0.96] text-paper-ink">
+              <h2 className="font-display text-[clamp(32px,3.6vw,46px)] font-extrabold leading-[0.96] text-paper-ink">
                 Real hardware. Real signal path.
               </h2>
               <p className="mt-5 max-w-[420px] text-[15px] text-[#4a473f]">
@@ -278,7 +277,7 @@ export default function Home() {
         <div className="mx-auto flex items-center justify-center gap-2.5 font-mono text-[13px] tracking-[0.08em] text-muted">
           <RecDot /> SIGNAL OUT
         </div>
-        <h2 className="mx-auto mt-5 max-w-[760px] font-display text-[clamp(40px,6vw,78px)] font-800 leading-[0.96]">
+        <h2 className="mx-auto mt-5 max-w-[760px] font-display text-[clamp(40px,6vw,78px)] font-extrabold leading-[0.96]">
           Ready to send your track through?
         </h2>
         <p className="mx-auto mt-4 max-w-[460px] text-muted">

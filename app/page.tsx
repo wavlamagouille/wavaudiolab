@@ -1,6 +1,5 @@
 "use client";
 
-import BeamsBackground from "@/components/kokonutui/beams-background";
 import ParticleButton from "@/components/kokonutui/particle-button";
 import ProductGrid, { type Product } from "@/components/product-grid";
 import ScrollProgress from "@/components/scroll-progress";
@@ -31,8 +30,8 @@ export default function Home() {
       {/* ---------- NAV ---------- */}
       <SiteHeader />
 
-      {/* ---------- HERO (real Beams Background, recolored to brand) ---------- */}
-      <BeamsBackground intensity="medium" className="pb-24 pt-24">
+      {/* ---------- HERO ---------- */}
+      <div className="pb-24 pt-24">
         <Stagger className="mx-auto max-w-[1180px] px-8">
           <StaggerItem className="mb-7 flex items-center gap-2.5 font-mono text-[13px] tracking-[0.08em] text-muted">
             <RecDot /> SIGNAL IN — WAVAUDIOLAB STUDIO, SWITZERLAND
@@ -63,7 +62,7 @@ export default function Home() {
             </a>
           </StaggerItem>
         </Stagger>
-      </BeamsBackground>
+      </div>
 
       {/* ---------- MIXING / MASTERING / PACKS — sticky crossfade on desktop ---------- */}
       <StageStack

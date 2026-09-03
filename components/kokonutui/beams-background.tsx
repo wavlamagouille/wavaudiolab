@@ -4,19 +4,14 @@
  * Adapted from KokonutUI's Beams Background (MIT licensed)
  * https://kokonutui.com — https://github.com/kokonut-labs/kokonutui
  * Original hue range swapped from blue/cyan to Wavaudiolab's signal-red +
- * VU-amber palette, and the component now renders passed-in children
- * instead of its own hardcoded headline, so it works as a background layer.
+ * VU-amber palette. Originally built to wrap just the hero as a section
+ * background; now a standalone fixed layer rendered once at the site level
+ * so it runs across the whole site, not just the home page's hero — same
+ * pattern as the other ambient background layers (orbs, particles, grain).
  */
 
 import { motion } from "motion/react";
 import { useEffect, useRef } from "react";
-import { cn } from "@/lib/utils";
-
-interface BeamsBackgroundProps {
-  className?: string;
-  children?: React.ReactNode;
-  intensity?: "subtle" | "medium" | "strong";
-}
 
 interface Beam {
   x: number;
@@ -47,7 +42,7 @@ function createBeam(width: number, height: number): Beam {
     length: height * 2.5,
     angle,
     speed: 0.6 + Math.random() * 1.2,
-    opacity: 0.12 + Math.random() * 0.16,
+    opacity: 0.1 + Math.random() * 0.13,
     hue: pickHue(),
     pulse: Math.random() * Math.PI * 2,
     pulseSpeed: 0.02 + Math.random() * 0.03,
@@ -55,10 +50,10 @@ function createBeam(width: number, height: number): Beam {
 }
 
 export default function BeamsBackground({
-  className,
-  children,
-  intensity = "medium",
-}: BeamsBackgroundProps) {
+  intensity = "subtle",
+}: {
+  intensity?: "subtle" | "medium" | "strong";
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const beamsRef = useRef<Beam[]>([]);
   const animationFrameRef = useRef<number>(0);
@@ -105,7 +100,7 @@ export default function BeamsBackground({
       beam.width = 100 + Math.random() * 100;
       beam.speed = 0.5 + Math.random() * 0.4;
       beam.hue = pickHue();
-      beam.opacity = 0.2 + Math.random() * 0.1;
+      beam.opacity = 0.18 + Math.random() * 0.09;
       return beam;
     }
 
@@ -165,15 +160,14 @@ export default function BeamsBackground({
   }, [intensity]);
 
   return (
-    <div className={cn("relative w-full overflow-hidden bg-ink", className)}>
+    <div className="pointer-events-none fixed inset-0 z-[-2] overflow-hidden" aria-hidden="true">
       <canvas className="absolute inset-0" ref={canvasRef} style={{ filter: "blur(15px)" }} />
       <motion.div
-        animate={{ opacity: [0.04, 0.12, 0.04] }}
+        animate={{ opacity: [0.03, 0.09, 0.03] }}
         className="absolute inset-0 bg-ink/10"
         style={{ backdropFilter: "blur(40px)" }}
         transition={{ duration: 10, ease: "easeInOut", repeat: Number.POSITIVE_INFINITY }}
       />
-      <div className="relative z-10">{children}</div>
     </div>
   );
 }

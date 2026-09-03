@@ -23,7 +23,7 @@ function ProductCard({ product }: { product: Product }) {
 
   return (
     <div
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/8 bg-white/[0.03] transition-colors duration-300 hover:border-white/16"
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/8 bg-white/[0.03] transition-colors duration-300 hover:border-white/16"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -57,14 +57,14 @@ function ProductCard({ product }: { product: Product }) {
           </div>
         )}
       </div>
-      <div className="flex flex-none flex-col p-5">
+      <div className="flex flex-1 flex-col p-5">
         <div className={`mb-2 font-mono text-[10.5px] tracking-[0.08em] ${tagColor}`}>
           {product.tag}
         </div>
         <h3 className="mb-1.5 font-display text-[22px] font-bold leading-[1.05]">
           {product.title}
         </h3>
-        <p className="mb-4 text-[13px] text-muted">{product.description}</p>
+        <p className="mb-4 flex-1 text-[13px] text-muted">{product.description}</p>
         <div className="flex items-baseline justify-between border-t border-line pt-4 font-mono">
           <span className="text-[17px] text-text">{product.price}</span>
           <span className={`text-[12px] transition-transform ${hovered ? "translate-x-1" : ""} text-signal`}>

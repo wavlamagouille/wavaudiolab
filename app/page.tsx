@@ -32,6 +32,7 @@ const packs: Product[] = [
     price: "44.99 CHF",
     tag: "25% OFF BUNDLED",
     tagColor: "amber",
+    image: "/packs/bundle.png",
   },
   {
     title: "Racks Bundle",

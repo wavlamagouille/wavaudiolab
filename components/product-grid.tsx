@@ -10,6 +10,7 @@ export interface Product {
   tag: string;
   tagColor?: "signal" | "amber";
   image?: string; // path in /public, e.g. "/packs/essential-tools-vol2.png"
+  imageAspect?: string; // CSS aspect-ratio, e.g. "5/4" — for shots wider than a single-box portrait (default "4/5")
 }
 
 function ProductCard({ product }: { product: Product }) {
@@ -22,7 +23,10 @@ function ProductCard({ product }: { product: Product }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div className="relative aspect-[4/5] w-full overflow-hidden bg-panel-2">
+      <div
+        className="relative w-full overflow-hidden bg-panel-2"
+        style={{ aspectRatio: product.imageAspect ?? "4/5" }}
+      >
         {product.image ? (
           <>
             <div

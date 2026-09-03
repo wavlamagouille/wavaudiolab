@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
-import { animate, onScroll } from "animejs";
 import BeamsBackground from "@/components/kokonutui/beams-background";
 import ParticleButton from "@/components/kokonutui/particle-button";
 import ProductGrid, { type Product } from "@/components/product-grid";
@@ -24,41 +22,7 @@ const packs: Product[] = products.map((p) => ({
   image: p.image,
 }));
 
-function StageHead({ num, label }: { num: string; label: string }) {
-  return (
-    <div className="mb-13 flex items-baseline gap-4">
-      <span className="font-mono text-[13px] tracking-wide text-signal">{num}</span>
-      <span
-        className="h-px flex-1 origin-left scale-x-0 bg-gradient-to-r from-signal to-line"
-        data-signal-line
-      />
-      <span className="font-mono text-[13px] tracking-[0.14em] text-muted">{label}</span>
-    </div>
-  );
-}
-
 export default function Home() {
-  // Each stage divider draws itself in as a real function of scroll position
-  // — not "fade in when it enters view" (that's Motion's whileInView, used
-  // nowhere here on purpose), but continuously scroll-scrubbed: scroll
-  // halfway through a section, the line is halfway drawn. This is anime.js's
-  // one genuinely distinct capability worth reaching for it specifically.
-  useEffect(() => {
-    const lines = document.querySelectorAll<HTMLElement>("[data-signal-line]");
-    lines.forEach((el) => {
-      animate(el, {
-        scaleX: [0, 1],
-        ease: "linear",
-        autoplay: onScroll({
-          target: el,
-          enter: "bottom-=15% top",
-          leave: "top+=10% bottom",
-          sync: true,
-        }),
-      });
-    });
-  }, []);
-
   return (
     <>
       <ScrollProgress />
@@ -101,9 +65,8 @@ export default function Home() {
       </BeamsBackground>
 
       {/* ---------- STAGE 01 — MIXING ---------- */}
-      <section className="border-t border-line py-24" id="mixing">
+      <section className="py-24" id="mixing">
         <div className="mx-auto max-w-[1180px] px-8">
-          <StageHead num="STAGE 01" label="MIXING" />
           <ScrollReveal className="grid items-start gap-[70px] md:grid-cols-[1.1fr_.9fr]">
             <div>
               <h2 className="max-w-[460px] font-display text-[clamp(34px,4vw,54px)] font-extrabold leading-[0.94]">
@@ -138,9 +101,8 @@ export default function Home() {
       </section>
 
       {/* ---------- STAGE 02 — MASTERING (flipped) ---------- */}
-      <section className="border-t border-line py-24" id="mastering">
+      <section className="py-24" id="mastering">
         <div className="mx-auto max-w-[1180px] px-8">
-          <StageHead num="STAGE 02" label="MASTERING" />
           <ScrollReveal className="grid items-start gap-[70px] md:grid-cols-[.9fr_1.1fr]">
             <div className="rounded-2xl border border-line bg-panel px-7 py-6 md:order-2">
               <SpecRow k="Mastering, per track" count={25} suffix=" CHF" />
@@ -174,9 +136,8 @@ export default function Home() {
       </section>
 
       {/* ---------- STAGE 03 — SAMPLE PACKS (real product photography) ---------- */}
-      <section className="border-t border-line py-24" id="packs">
+      <section className="py-24" id="packs">
         <div className="mx-auto max-w-[1180px] px-8">
-          <StageHead num="STAGE 03" label="SAMPLE PACKS — OUTPUT" />
           <ScrollReveal>
             <div>
               <ProductGrid products={packs} />
@@ -186,15 +147,8 @@ export default function Home() {
       </section>
 
       {/* ---------- THE LAB (inverted paper panel) ---------- */}
-      <section className="border-t border-line bg-paper py-24 text-paper-ink" id="lab">
+      <section className="bg-paper py-24 text-paper-ink" id="lab">
         <div className="mx-auto max-w-[1180px] px-8">
-          <div className="mb-13 flex items-baseline gap-4">
-            <span className="font-mono text-[13px] tracking-wide text-signal">STAGE 00</span>
-            <span className="h-px flex-1 bg-paper-line" />
-            <span className="font-mono text-[13px] tracking-[0.14em] text-[#7a756a]">
-              THE LAB — SIGNAL SOURCE
-            </span>
-          </div>
           <ScrollReveal className="grid gap-[70px] md:grid-cols-[.85fr_1.15fr]">
             <div>
               <h2 className="font-display text-[clamp(32px,3.6vw,46px)] font-extrabold leading-[0.96] text-paper-ink">

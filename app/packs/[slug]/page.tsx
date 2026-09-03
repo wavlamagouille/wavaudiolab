@@ -120,10 +120,9 @@ export default async function ProductPage({
         </div>
 
         {/* ---------- CONTENTS BREAKDOWN ---------- */}
-        <div className="mt-20 border-t border-line pt-14">
-          <div className="mb-10 flex items-baseline gap-4">
+        <div className="mt-20 pt-14">
+          <div className="mb-10">
             <span className="font-mono text-[13px] tracking-wide text-signal">CONTENTS</span>
-            <span className="h-px flex-1 bg-line" />
           </div>
           <ScrollReveal className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {product.contents.map((group) => {

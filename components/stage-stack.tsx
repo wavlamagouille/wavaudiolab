@@ -1,22 +1,58 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { animate, onScroll } from "animejs";
 
-// Desktop: each stage is absolutely stacked inside one sticky, full-height
-// panel. Scrolling through the tall wrapper never moves the panel itself —
-// it just drives an opacity crossfade between whichever two stages are
-// adjacent, so one dissolves out exactly as the next dissolves in, in the
-// same screen position. This genuinely needs scroll-sync (continuous,
-// scroll-position-driven opacity), unlike the general content reveals
-// elsewhere on the site — it's the one place that mechanism is actually
-// the right tool.
+// Desktop: each stage is absolutely stacked inside one sticky panel pinned
+// just below the header. Scrolling drives a crossfade between whichever
+// stage is active — computed directly from real scroll position rather
+// than anime.js's threshold-string API, which repeatedly proved hard to
+// get exactly right blind. This version is plain, verifiable arithmetic:
+// easy to reason about and to fix precisely when something's off.
 //
-// Mobile: none of this. The height:auto / static-position fallback below
-// is the default and only overridden at the lg breakpoint, so a phone just
-// gets the three stages in plain stacked flow — pinning viewport-height
-// content is fragile on mobile browsers (dynamic toolbars resizing the
-// viewport) and not worth the risk for a feature no one's asking for there.
+// Two real bugs fixed here versus the previous version:
+// 1. The sticky panel's `top` didn't account for the 76px header sitting
+//    above it in normal flow, so the browser required ~76px of ordinary
+//    scrolling before the panel actually locked in place and the
+//    crossfade could start — felt like "the page shifts, then the
+//    animation begins." Panel now sticks at `top: 76px` (matching the
+//    header height) so it engages the instant scrolling starts, and
+//    progress is computed relative to that same rest position so there's
+//    no dead zone before it starts responding.
+// 2. All five layers sit in the exact same absolute position at all
+//    times. opacity:0 does not make an element unclickable — a later
+//    layer (e.g. Connect) was sitting on top of an earlier one (Packs) in
+//    default stacking order, invisible but still capturing every click
+//    and hover meant for the layer underneath. Only the currently-visible
+//    layer gets pointer-events now; everything else is explicitly
+//    disabled.
+//
+// Mobile: none of this — falls back to plain stacked flow via CSS
+// breakpoints only, same as before.
+const HEADER_HEIGHT = 76; // px — must match SiteHeader's h-[76px]
+
+function computeOpacity(progress: number, i: number, n: number): number {
+  const segment = 1 / n;
+  const crossfade = segment * 0.28;
+  const startAt = i * segment;
+  const endAt = (i + 1) * segment;
+
+  if (i === 0) {
+    if (progress <= endAt - crossfade) return 1;
+    if (progress >= endAt) return 0;
+    return 1 - (progress - (endAt - crossfade)) / crossfade;
+  }
+  if (i === n - 1) {
+    if (progress <= startAt) return 0;
+    if (progress >= startAt + crossfade) return 1;
+    return (progress - startAt) / crossfade;
+  }
+  if (progress <= startAt) return 0;
+  if (progress <= startAt + crossfade) return (progress - startAt) / crossfade;
+  if (progress <= endAt - crossfade) return 1;
+  if (progress <= endAt) return 1 - (progress - (endAt - crossfade)) / crossfade;
+  return 0;
+}
+
 export default function StageStack({
   stages,
   id,
@@ -35,76 +71,56 @@ export default function StageStack({
     const isDesktop = window.matchMedia("(min-width: 1024px)").matches;
 
     if (isDesktop) {
-      // set the scroll-multiplier height only on desktop, where the
-      // sticky/pinned layout actually applies
       wrap.style.height = `${stages.length * 60}vh`;
     }
 
     if (reduceMotion) {
-      // the lg: CSS classes hide every stage but the first via a pure
-      // media query, independent of JS — if this effect stopped here for
-      // reduced-motion users on a desktop-width screen, stages 2+ would
-      // stay invisible forever with nothing left to reveal them. Force
-      // every layer visible and drop the pinned layout entirely instead.
       wrap.style.height = "auto";
       layerRefs.current.forEach((layer) => {
         if (!layer) return;
         layer.style.opacity = "1";
         layer.style.position = "static";
+        layer.style.pointerEvents = "auto";
       });
       return;
     }
 
     if (!isDesktop) return;
 
-    const n = stages.length;
-    const segment = 100 / n;
-    const crossfade = segment * 0.28;
+    let rafId = 0;
 
-    layerRefs.current.forEach((layer, i) => {
-      if (!layer) return;
-      const startAt = i * segment;
-      const endAt = (i + 1) * segment;
+    function update() {
+      if (!wrap) return;
+      const rect = wrap.getBoundingClientRect();
+      const range = wrap.offsetHeight - (window.innerHeight - HEADER_HEIGHT);
+      const progress =
+        range > 0
+          ? Math.min(1, Math.max(0, (HEADER_HEIGHT - rect.top) / range))
+          : 0;
 
-      let opacityKeyframes;
-      if (i === 0) {
-        opacityKeyframes = [
-          { to: 1, duration: endAt - crossfade },
-          { to: 0, duration: crossfade },
-          { to: 0, duration: 100 - endAt },
-        ];
-      } else if (i === n - 1) {
-        opacityKeyframes = [
-          { to: 0, duration: startAt },
-          { to: 1, duration: crossfade },
-          { to: 1, duration: 100 - startAt - crossfade },
-        ];
-      } else {
-        opacityKeyframes = [
-          { to: 0, duration: startAt },
-          { to: 1, duration: crossfade },
-          { to: 1, duration: endAt - crossfade - (startAt + crossfade) },
-          { to: 0, duration: crossfade },
-          { to: 0, duration: 100 - endAt },
-        ];
-      }
-
-      animate(layer, {
-        opacity: opacityKeyframes,
-        ease: "linear",
-        autoplay: onScroll({
-          target: wrap,
-          enter: "top top",
-          leave: "bottom bottom",
-          sync: true,
-        }),
+      layerRefs.current.forEach((layer, i) => {
+        if (!layer) return;
+        const opacity = computeOpacity(progress, i, stages.length);
+        layer.style.opacity = String(opacity);
+        layer.style.pointerEvents = opacity > 0.5 ? "auto" : "none";
       });
-    });
+
+      rafId = requestAnimationFrame(update);
+    }
+
+    rafId = requestAnimationFrame(update);
+
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, [stages.length]);
 
   return (
     <div ref={wrapRef} id={id} className="relative lg:h-[300vh]">
-      <div className="lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden">
+      <div
+        className="lg:sticky lg:h-[calc(100vh-76px)] lg:overflow-hidden"
+        style={{ top: `${HEADER_HEIGHT}px` }}
+      >
         {stages.map((stage, i) => (
           <div
             key={i}

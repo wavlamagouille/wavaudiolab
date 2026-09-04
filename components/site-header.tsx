@@ -16,7 +16,7 @@ export default function SiteHeader() {
         </nav>
         <Link
           className="rounded-full border border-line-2 px-[18px] py-2.5 font-mono text-[13px] transition-colors hover:border-signal hover:text-signal"
-          href="https://wavmastering.vercel.app"
+          href="/studio"
         >
           Start a project
         </Link>

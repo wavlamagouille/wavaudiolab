@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import ParticleButton from "@/components/kokonutui/particle-button";
 import ProductGrid, { type Product } from "@/components/product-grid";
 import ScrollProgress from "@/components/scroll-progress";
@@ -49,19 +50,17 @@ export default function Home() {
               what your track actually needs.
             </p>
             <div className="mt-9 flex flex-wrap gap-3.5">
-              <a href="https://wavmastering.vercel.app" target="_blank" rel="noopener">
+              <Link href="/studio">
                 <ParticleButton variant="signal" size="lg" className="font-mono text-[13.5px]">
                   Start a project
                 </ParticleButton>
-              </a>
-              <a
+              </Link>
+              <Link
                 className="inline-flex items-center gap-2 rounded-full border border-line-2 px-6 py-[15px] font-mono text-[13.5px] transition-colors hover:border-text"
-                href="https://wavmastering.vercel.app"
-                target="_blank"
-                rel="noopener"
+                href="/studio"
               >
                 Get a quote
-              </a>
+              </Link>
             </div>
           </div>,
           <div key="mixing" className="grid items-start gap-[70px] md:grid-cols-[1.1fr_.9fr]">
@@ -74,14 +73,12 @@ export default function Home() {
                 6-track idea and a 40-channel session aren&apos;t charged the
                 same — you only pay for the complexity you actually bring.
               </p>
-              <a
+              <Link
                 className="mt-7 inline-flex items-center gap-2 rounded-full border border-line-2 px-6 py-[15px] font-mono text-[13.5px] transition-colors hover:border-text"
-                href="https://wavmastering.vercel.app"
-                target="_blank"
-                rel="noopener"
+                href="/studio"
               >
                 Send your stems →
-              </a>
+              </Link>
             </div>
             <div className="rounded-2xl border border-line bg-panel px-7 py-6">
               <SpecRow k="Up to 9 channels" count={100} suffix=" CHF" />
@@ -117,14 +114,12 @@ export default function Home() {
                 one system. Stem mastering available for finer control at the
                 top of the chain.
               </p>
-              <a
+              <Link
                 className="mt-7 inline-flex items-center gap-2 rounded-full border border-line-2 px-6 py-[15px] font-mono text-[13.5px] transition-colors hover:border-text"
-                href="https://wavmastering.vercel.app"
-                target="_blank"
-                rel="noopener"
+                href="/studio"
               >
                 Send your premaster →
-              </a>
+              </Link>
             </div>
           </div>,
           <div key="before-after" className="mx-auto w-full max-w-[640px]">
@@ -162,11 +157,11 @@ export default function Home() {
               talking to the person who&apos;ll actually work on it.
             </p>
             <div className="mt-8 flex justify-center">
-              <a href="https://wavmastering.vercel.app" target="_blank" rel="noopener">
+              <Link href="/studio">
                 <ParticleButton variant="signal" size="lg" className="font-mono text-[13.5px]">
                   Start a project
                 </ParticleButton>
-              </a>
+              </Link>
             </div>
           </div>,
         ]}

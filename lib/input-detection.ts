@@ -8,6 +8,7 @@
 // our own scroll-driven animations should treat as "one full cycle."
 let trackpadLikely = false;
 let samples = 0;
+const listeners = new Set<() => void>();
 
 if (typeof window !== "undefined") {
   window.addEventListener(
@@ -16,8 +17,9 @@ if (typeof window !== "undefined") {
       if (samples > 40) return; // settle on an answer early, don't keep flip-flopping
       const isFractional = Math.abs(e.deltaY) % 1 !== 0;
       const isSmall = Math.abs(e.deltaY) > 0 && Math.abs(e.deltaY) < 30;
-      if (isFractional || isSmall) {
+      if ((isFractional || isSmall) && !trackpadLikely) {
         trackpadLikely = true;
+        listeners.forEach((fn) => fn());
       }
       samples++;
     },
@@ -30,4 +32,12 @@ if (typeof window !== "undefined") {
 // wheel input is completely unaffected (multiplier of 1).
 export function getScrollRangeMultiplier(): number {
   return trackpadLikely ? 0.6 : 1;
+}
+
+// Detection only resolves after the first real scroll input, which is
+// after mount — anything that sizes itself based on the multiplier needs
+// to know when it's worth re-checking, not just read it once at mount.
+export function onInputDetectionChange(fn: () => void): () => void {
+  listeners.add(fn);
+  return () => listeners.delete(fn);
 }

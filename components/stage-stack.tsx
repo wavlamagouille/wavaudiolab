@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { getScrollRangeMultiplier } from "@/lib/input-detection";
+import { getScrollRangeMultiplier, onInputDetectionChange } from "@/lib/input-detection";
 
 // Desktop: each stage is absolutely stacked inside one sticky panel pinned
 // just below the header. Scrolling drives a crossfade between whichever
@@ -71,8 +71,19 @@ export default function StageStack({
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const isDesktop = window.matchMedia("(min-width: 1024px)").matches;
 
+    function applyHeight() {
+      if (!wrap || !isDesktop) return;
+      // the multiplier shrinks the actual element height, not just an
+      // internal progress formula — the sticky release point is a native
+      // browser behavior tied to real DOM height, so both need to shrink
+      // together or the crossfade finishes while the sticky panel is
+      // still pinned, leaving a stretch of scrolling with nothing
+      // happening before the page actually continues.
+      wrap!.style.height = `${stages.length * 60 * getScrollRangeMultiplier()}vh`;
+    }
+
     if (isDesktop) {
-      wrap.style.height = `${stages.length * 60}vh`;
+      applyHeight();
     }
 
     if (reduceMotion) {
@@ -94,9 +105,7 @@ export default function StageStack({
     function update() {
       if (!wrap) return;
       const rect = wrap.getBoundingClientRect();
-      const range =
-        (wrap.offsetHeight - (window.innerHeight - HEADER_HEIGHT)) *
-        getScrollRangeMultiplier();
+      const range = wrap.offsetHeight - (window.innerHeight - HEADER_HEIGHT);
       const progress =
         range > 0
           ? Math.min(1, Math.max(0, (HEADER_HEIGHT - rect.top) / range))
@@ -118,11 +127,17 @@ export default function StageStack({
       }
     }
 
+    const unsubscribe = onInputDetectionChange(() => {
+      applyHeight();
+      update();
+    });
+
     update(); // paint the initial state once on mount
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
 
     return () => {
+      unsubscribe();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
       if (rafId) cancelAnimationFrame(rafId);

@@ -8,7 +8,7 @@ export default function MixerJack() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-y-0 left-8 z-10 hidden w-10 items-center justify-center lg:flex"
+      className="pointer-events-none absolute inset-y-0 left-8 z-10 hidden w-10 items-end justify-center pb-32 lg:flex"
     >
       <svg width="46" height="52" viewBox="0 0 46 52">
         {/* mixer panel plate */}

@@ -32,14 +32,14 @@ export default function CountUp({
     animate(counter, {
       val: value,
       round: 1,
-      duration: 1100,
+      duration: 450,
       ease: "outExpo",
       onUpdate: () => {
         el.textContent = `${counter.val}${suffix}`;
       },
       autoplay: onScroll({
         target: el,
-        enter: "bottom-=5% bottom",
+        enter: "bottom-=15% bottom",
       }),
     });
   }, [value, suffix]);

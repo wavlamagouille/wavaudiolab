@@ -10,6 +10,7 @@ import RecDot from "@/components/rec-dot";
 import StageStack from "@/components/stage-stack";
 import BeforeAfterPlayer from "@/components/before-after-player";
 import Testimonials from "@/components/testimonials";
+import MixerJack from "@/components/mixer-jack";
 import CountUp from "@/components/count-up";
 import { products } from "@/lib/products";
 
@@ -166,6 +167,10 @@ export default function Home() {
           </div>,
         ]}
       />
+
+      <div className="relative h-16">
+        <MixerJack />
+      </div>
 
       <SiteFooter />
     </>

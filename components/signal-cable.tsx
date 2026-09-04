@@ -58,8 +58,20 @@ export default function SignalCable() {
     let docked = false;
 
     function update() {
-      const doc = document.documentElement;
-      const range = doc.scrollHeight - window.innerHeight;
+      // progress targets the end of the main scroll sequence (the
+      // StageStack, id="mixing") rather than the full document —
+      // otherwise the cable only finishes drawing and docking once
+      // scrolled all the way through the footer too, well past where
+      // the actual content and the mixer socket now sit.
+      const stackEl = document.getElementById("mixing");
+      let range: number;
+      if (stackEl) {
+        const stackBottom = stackEl.offsetTop + stackEl.offsetHeight;
+        range = stackBottom - window.innerHeight;
+      } else {
+        const doc = document.documentElement;
+        range = doc.scrollHeight - window.innerHeight;
+      }
       const progress = range > 0 ? Math.min(1, Math.max(0, window.scrollY / range)) : 0;
 
       const offset = length * (1 - progress);

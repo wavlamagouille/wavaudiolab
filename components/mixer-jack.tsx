@@ -1,13 +1,14 @@
 // A small stylized analog-mixer input jack, positioned to align with
-// where the signal cable's drawn path actually terminates (bottom of the
-// whole page). Purely decorative SVG, no motion of its own — the payoff
-// is the cable's plug appearing to land here once you've scrolled all
-// the way down.
+// where the signal cable's drawn path actually terminates — right at the
+// end of the main scroll sequence, not tucked inside the footer, so
+// reaching it doesn't require scrolling further than the content itself
+// goes. Purely decorative SVG, no motion of its own — the payoff is the
+// cable's plug appearing to land here.
 export default function MixerJack() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute bottom-3 left-8 z-10 hidden w-10 justify-center lg:flex"
+      className="pointer-events-none absolute inset-y-0 left-8 z-10 hidden w-10 items-center justify-center lg:flex"
     >
       <svg width="46" height="52" viewBox="0 0 46 52">
         {/* mixer panel plate */}

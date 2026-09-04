@@ -33,8 +33,8 @@ export default function PageTransition({ children }: { children: React.ReactNode
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         className="relative"
       >
-        <SignalCable />
         {children}
+        <SignalCable />
       </motion.div>
     </AnimatePresence>
   );

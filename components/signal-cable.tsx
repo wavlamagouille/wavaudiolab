@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import JackPlug3D from "./jack-plug-3d";
 
 // Real black cable + a jack plug modeled on an actual 1/4" TRS connector:
 // a knurled brass grip section, a dark insulator ring, then a tapered
@@ -161,31 +162,9 @@ export default function SignalCable() {
         />
       </svg>
 
-      {/* the jack plug — knurled brass grip, insulator ring, straight tip (no taper) */}
+      {/* the jack plug — a real 3D object, not a flat icon */}
       <div ref={plugRef} className="absolute left-0 top-0 opacity-0" style={{ willChange: "transform" }}>
-        <svg width="16" height="44" viewBox="0 0 16 44">
-          <defs>
-            <linearGradient id="plugGold" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#5c4212" />
-              <stop offset="22%" stopColor="#c99a3a" />
-              <stop offset="42%" stopColor="#fff3c4" />
-              <stop offset="58%" stopColor="#e8c766" />
-              <stop offset="80%" stopColor="#a67a2a" />
-              <stop offset="100%" stopColor="#4a350f" />
-            </linearGradient>
-          </defs>
-          {/* knurled grip, uniform width */}
-          <rect x="4" y="0" width="8" height="16" fill="url(#plugGold)" />
-          {[2, 4, 6, 8, 10, 12, 14].map((y) => (
-            <line key={y} x1="4" y1={y} x2="12" y2={y} stroke="#3a2a0a" strokeWidth="0.5" opacity="0.6" />
-          ))}
-          {/* dark insulator ring */}
-          <rect x="4" y="16" width="8" height="2" fill="#101112" />
-          {/* smooth tip section — same width as the grip, no taper */}
-          <rect x="4" y="18" width="8" height="22" fill="url(#plugGold)" />
-          {/* small rounded cap at the very end */}
-          <rect x="4" y="40" width="8" height="4" rx="2" fill="url(#plugGold)" />
-        </svg>
+        <JackPlug3D size={16} />
       </div>
     </div>
   );

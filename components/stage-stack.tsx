@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { getScrollRangeMultiplier } from "@/lib/input-detection";
 
 // Desktop: each stage is absolutely stacked inside one sticky panel pinned
 // just below the header. Scrolling drives a crossfade between whichever
@@ -93,7 +94,9 @@ export default function StageStack({
     function update() {
       if (!wrap) return;
       const rect = wrap.getBoundingClientRect();
-      const range = wrap.offsetHeight - (window.innerHeight - HEADER_HEIGHT);
+      const range =
+        (wrap.offsetHeight - (window.innerHeight - HEADER_HEIGHT)) *
+        getScrollRangeMultiplier();
       const progress =
         range > 0
           ? Math.min(1, Math.max(0, (HEADER_HEIGHT - rect.top) / range))

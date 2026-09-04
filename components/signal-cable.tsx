@@ -30,6 +30,7 @@ const CABLE_PATH = `M20,0
 // once overall scroll progress passes this point, the plug stops
 // following the raw path math and eases into the socket's real position
 const DOCK_START = 0.975;
+const PLUG_HEIGHT = 44; // matches the plug SVG's own height attribute (1:1 px)
 
 export default function SignalCable() {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -69,27 +70,34 @@ export default function SignalCable() {
       const svgRect = svg!.getBoundingClientRect();
       const scaleY = svgRect.height / VIEWBOX_H;
 
-      let px = point.x;
-      let py = point.y * scaleY;
+      // normal following: anchor is the plug's TOP, meeting the drawn
+      // cable tip exactly
+      let topX = point.x - 8;
+      let topY = point.y * scaleY;
 
       if (progress > DOCK_START) {
         const socket = document.getElementById("mixer-jack-socket");
         if (socket) {
           const socketRect = socket.getBoundingClientRect();
-          const targetX = socketRect.left + socketRect.width / 2 - wrapperRect.left;
-          const targetY = socketRect.top + socketRect.height / 2 - wrapperRect.top;
+          const targetX = socketRect.left + socketRect.width / 2 - wrapperRect.left - 8;
+          // docking anchor is the plug's TIP (bottom), which is what should
+          // actually reach the socket, not wherever the top happens to land
+          const targetTopY =
+            socketRect.top + socketRect.height / 2 - wrapperRect.top - PLUG_HEIGHT + 6;
           const dockT = Math.min(1, (progress - DOCK_START) / (1 - DOCK_START));
-          px = px + (targetX - px) * dockT;
-          py = py + (targetY - py) * dockT;
+          // ease-out with a very slight overshoot for a "seats into place" feel
+          const eased = dockT < 1 ? 1 - Math.pow(1 - dockT, 3) : 1;
+          topX = topX + (targetX - topX) * eased;
+          topY = topY + (targetTopY - topY) * eased;
 
           const glow = document.getElementById("mixer-jack-glow");
-          if (dockT > 0.85 && !docked) {
+          if (dockT > 0.9 && !docked) {
             docked = true;
             if (glow) {
               glow.style.opacity = "1";
-              glow.style.strokeWidth = "2";
+              glow.style.strokeWidth = "2.2";
             }
-          } else if (dockT <= 0.85 && docked) {
+          } else if (dockT <= 0.9 && docked) {
             docked = false;
             if (glow) {
               glow.style.opacity = "0.55";
@@ -100,7 +108,7 @@ export default function SignalCable() {
       }
 
       plug!.style.opacity = progress > 0.004 ? "1" : "0";
-      plug!.style.transform = `translate(${px - 8}px, ${py}px)`;
+      plug!.style.transform = `translate(${topX}px, ${topY}px)`;
 
       rafId = requestAnimationFrame(update);
     }
@@ -153,29 +161,30 @@ export default function SignalCable() {
         />
       </svg>
 
-      {/* the jack plug — knurled brass grip, insulator ring, tapered tip */}
+      {/* the jack plug — knurled brass grip, insulator ring, straight tip (no taper) */}
       <div ref={plugRef} className="absolute left-0 top-0 opacity-0" style={{ willChange: "transform" }}>
         <svg width="16" height="44" viewBox="0 0 16 44">
           <defs>
             <linearGradient id="plugGold" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#6b4d18" />
-              <stop offset="28%" stopColor="#e8c766" />
-              <stop offset="48%" stopColor="#fff3c4" />
-              <stop offset="68%" stopColor="#d4a637" />
-              <stop offset="100%" stopColor="#5c4212" />
+              <stop offset="0%" stopColor="#5c4212" />
+              <stop offset="22%" stopColor="#c99a3a" />
+              <stop offset="42%" stopColor="#fff3c4" />
+              <stop offset="58%" stopColor="#e8c766" />
+              <stop offset="80%" stopColor="#a67a2a" />
+              <stop offset="100%" stopColor="#4a350f" />
             </linearGradient>
           </defs>
-          {/* knurled grip body */}
-          <rect x="2" y="0" width="12" height="19" fill="url(#plugGold)" />
-          {[2.5, 5, 7.5, 10, 12.5, 15, 17.5].map((y) => (
-            <line key={y} x1="2" y1={y} x2="14" y2={y} stroke="#4a350f" strokeWidth="0.6" opacity="0.6" />
+          {/* knurled grip, uniform width */}
+          <rect x="4" y="0" width="8" height="16" fill="url(#plugGold)" />
+          {[2, 4, 6, 8, 10, 12, 14].map((y) => (
+            <line key={y} x1="4" y1={y} x2="12" y2={y} stroke="#3a2a0a" strokeWidth="0.5" opacity="0.6" />
           ))}
           {/* dark insulator ring */}
-          <rect x="2" y="19" width="12" height="2.4" fill="#101112" />
-          {/* tapered neck to tip */}
-          <path d="M2,21.4 L14,21.4 L11,38 L5,38 Z" fill="url(#plugGold)" />
-          {/* rounded polished tip */}
-          <circle cx="8" cy="40" r="2.6" fill="url(#plugGold)" />
+          <rect x="4" y="16" width="8" height="2" fill="#101112" />
+          {/* smooth tip section — same width as the grip, no taper */}
+          <rect x="4" y="18" width="8" height="22" fill="url(#plugGold)" />
+          {/* small rounded cap at the very end */}
+          <rect x="4" y="40" width="8" height="4" rx="2" fill="url(#plugGold)" />
         </svg>
       </div>
     </div>

@@ -37,7 +37,7 @@ export default function StageStack({
     if (isDesktop) {
       // set the scroll-multiplier height only on desktop, where the
       // sticky/pinned layout actually applies
-      wrap.style.height = `${stages.length * 72}vh`;
+      wrap.style.height = `${stages.length * 60}vh`;
     }
 
     if (reduceMotion) {
@@ -103,7 +103,7 @@ export default function StageStack({
   }, [stages.length]);
 
   return (
-    <div ref={wrapRef} id={id} className="relative lg:h-[360vh]">
+    <div ref={wrapRef} id={id} className="relative lg:h-[300vh]">
       <div className="lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden">
         {stages.map((stage, i) => (
           <div

@@ -27,6 +27,16 @@ export async function generateMetadata({
   return {
     title: `${product.title} — Wavaudiolab`,
     description: product.shortDescription,
+    openGraph: {
+      title: `${product.title} — Wavaudiolab`,
+      description: product.shortDescription,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${product.title} — Wavaudiolab`,
+      description: product.shortDescription,
+    },
   };
 }
 
@@ -41,8 +51,26 @@ export default async function ProductPage({
 
   const tagColor = product.tagColor === "amber" ? "text-amber" : "text-signal";
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    description: product.shortDescription,
+    brand: { "@type": "Brand", name: "Wavaudiolab" },
+    offers: {
+      "@type": "Offer",
+      price: product.price.replace(/[^0-9.]/g, ""),
+      priceCurrency: "CHF",
+      availability: "https://schema.org/InStock",
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <SiteHeader />
 
       <div className="mx-auto max-w-[1180px] px-8 py-14">

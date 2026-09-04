@@ -5,6 +5,11 @@ import SiteFooter from "@/components/site-footer";
 export const metadata: Metadata = {
   title: "FAQ — Wavaudiolab",
   description: "Common questions about mixing, mastering, turnaround, and the sample packs.",
+  openGraph: {
+    title: "FAQ — Wavaudiolab",
+    description: "Common questions about mixing, mastering, turnaround, and the sample packs.",
+    type: "website",
+  },
 };
 
 const FAQS = [

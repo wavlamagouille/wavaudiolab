@@ -15,9 +15,23 @@ import BeamsBackground from "@/components/kokonutui/beams-background";
 import MouseTrail from "@/components/mouse-trail";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.wavaudiolab.ch"),
   title: "Wavaudiolab — Mixing & Mastering Studio",
   description:
     "Wavaudiolab — mixing, mastering, and sample packs from a hard techno studio in Switzerland. Engineered to translate, on any system.",
+  openGraph: {
+    title: "Wavaudiolab — Mixing & Mastering Studio",
+    description:
+      "Wavaudiolab — mixing, mastering, and sample packs from a hard techno studio in Switzerland. Engineered to translate, on any system.",
+    type: "website",
+    siteName: "Wavaudiolab",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Wavaudiolab — Mixing & Mastering Studio",
+    description:
+      "Wavaudiolab — mixing, mastering, and sample packs from a hard techno studio in Switzerland.",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

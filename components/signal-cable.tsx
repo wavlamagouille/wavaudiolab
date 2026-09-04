@@ -94,6 +94,15 @@ export default function SignalCable() {
     }
 
     function update() {
+      // recomputed every call rather than trusted from an earlier
+      // snapshot — measuring once at mount risked capturing a wrong,
+      // tiny value if it ran before the page's real content had
+      // finished rendering, and never correcting itself afterward. This
+      // is cheap enough to redo every frame; the values it reads only
+      // actually change on resize/content changes, not from redundant
+      // reads themselves.
+      computeRange();
+
       const progress = range > 0 ? Math.min(1, Math.max(0, window.scrollY / range)) : 0;
 
       const offset = length * (1 - progress);
@@ -155,19 +164,13 @@ export default function SignalCable() {
       }
     }
 
-    function onResize() {
-      computeRange();
-      onScroll();
-    }
-
-    computeRange();
-    update(); // paint the initial position once on mount
+    update(); // computes range fresh and paints the initial position on mount
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
 
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener("resize", onScroll);
       if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);

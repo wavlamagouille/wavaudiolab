@@ -33,7 +33,7 @@ export default function MouseTrail() {
     if (reduceMotion || isCoarsePointer) return;
 
     const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = window.innerWidth * dpr;
       canvas.height = window.innerHeight * dpr;
       canvas.style.width = `${window.innerWidth}px`;
@@ -58,7 +58,6 @@ export default function MouseTrail() {
       if (!(canvas && ctx)) return;
       const now = performance.now();
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.filter = "blur(20px)";
 
       pointsRef.current = pointsRef.current.filter((p) => now - p.born < LIFE_MS);
 
@@ -91,6 +90,7 @@ export default function MouseTrail() {
       ref={canvasRef}
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 z-[-1]"
+      style={{ filter: "blur(18px)" }}
     />
   );
 }

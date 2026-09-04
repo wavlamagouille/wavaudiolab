@@ -54,6 +54,7 @@ export default function SignalCable() {
     });
 
     let rafId = 0;
+    let ticking = false;
     let docked = false;
 
     function update() {
@@ -110,12 +111,23 @@ export default function SignalCable() {
 
       plug!.style.opacity = progress > 0.004 ? "1" : "0";
       plug!.style.transform = `translate(${topX}px, ${topY}px)`;
-
-      rafId = requestAnimationFrame(update);
+      ticking = false;
     }
 
-    rafId = requestAnimationFrame(update);
+    function onScroll() {
+      if (!ticking) {
+        ticking = true;
+        rafId = requestAnimationFrame(update);
+      }
+    }
+
+    update(); // paint the initial position once on mount
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+
     return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
       if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);

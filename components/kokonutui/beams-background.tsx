@@ -73,7 +73,11 @@ export default function BeamsBackground({
     if (!ctx) return;
 
     const updateCanvasSize = () => {
-      const dpr = window.devicePixelRatio || 1;
+      // Capped, not the raw devicePixelRatio: this content is intentionally
+      // soft and blurred, so full Retina resolution (2x on most MacBooks,
+      // meaning 4x the actual pixels to process every frame) buys no
+      // visible sharpness here, only extra CPU/GPU work.
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = window.innerWidth * dpr;
       canvas.height = window.innerHeight * dpr;
       canvas.style.width = `${window.innerWidth}px`;
@@ -131,7 +135,6 @@ export default function BeamsBackground({
     function animate() {
       if (!(canvas && ctx)) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.filter = "blur(35px)";
 
       const totalBeams = beamsRef.current.length;
       beamsRef.current.forEach((beam, index) => {
@@ -161,7 +164,7 @@ export default function BeamsBackground({
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[-2] overflow-hidden" aria-hidden="true">
-      <canvas className="absolute inset-0" ref={canvasRef} style={{ filter: "blur(15px)" }} />
+      <canvas className="absolute inset-0" ref={canvasRef} style={{ filter: "blur(26px)" }} />
       <motion.div
         animate={{ opacity: [0.03, 0.09, 0.03] }}
         className="absolute inset-0 bg-ink/10"

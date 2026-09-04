@@ -88,6 +88,7 @@ export default function StageStack({
     if (!isDesktop) return;
 
     let rafId = 0;
+    let ticking = false;
 
     function update() {
       if (!wrap) return;
@@ -104,13 +105,23 @@ export default function StageStack({
         layer.style.opacity = String(opacity);
         layer.style.pointerEvents = opacity > 0.5 ? "auto" : "none";
       });
-
-      rafId = requestAnimationFrame(update);
+      ticking = false;
     }
 
-    rafId = requestAnimationFrame(update);
+    function onScroll() {
+      if (!ticking) {
+        ticking = true;
+        rafId = requestAnimationFrame(update);
+      }
+    }
+
+    update(); // paint the initial state once on mount
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
 
     return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
       if (rafId) cancelAnimationFrame(rafId);
     };
   }, [stages.length]);

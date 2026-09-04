@@ -7,6 +7,8 @@ import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import RecDot from "@/components/rec-dot";
 import StageStack from "@/components/stage-stack";
+import BeforeAfterPlayer from "@/components/before-after-player";
+import Testimonials from "@/components/testimonials";
 import CountUp from "@/components/count-up";
 import { products } from "@/lib/products";
 
@@ -47,12 +49,16 @@ export default function Home() {
               what your track actually needs.
             </p>
             <div className="mt-9 flex flex-wrap gap-3.5">
-              <ParticleButton variant="signal" size="lg" className="font-mono text-[13.5px]">
-                Start a project
-              </ParticleButton>
+              <a href="https://wavmastering.vercel.app" target="_blank" rel="noopener">
+                <ParticleButton variant="signal" size="lg" className="font-mono text-[13.5px]">
+                  Start a project
+                </ParticleButton>
+              </a>
               <a
                 className="inline-flex items-center gap-2 rounded-full border border-line-2 px-6 py-[15px] font-mono text-[13.5px] transition-colors hover:border-text"
-                href="#connect"
+                href="https://wavmastering.vercel.app"
+                target="_blank"
+                rel="noopener"
               >
                 Get a quote
               </a>
@@ -70,7 +76,9 @@ export default function Home() {
               </p>
               <a
                 className="mt-7 inline-flex items-center gap-2 rounded-full border border-line-2 px-6 py-[15px] font-mono text-[13.5px] transition-colors hover:border-text"
-                href="#connect"
+                href="https://wavmastering.vercel.app"
+                target="_blank"
+                rel="noopener"
               >
                 Send your stems →
               </a>
@@ -111,14 +119,36 @@ export default function Home() {
               </p>
               <a
                 className="mt-7 inline-flex items-center gap-2 rounded-full border border-line-2 px-6 py-[15px] font-mono text-[13.5px] transition-colors hover:border-text"
-                href="#connect"
+                href="https://wavmastering.vercel.app"
+                target="_blank"
+                rel="noopener"
               >
                 Send your premaster →
               </a>
             </div>
           </div>,
+          <div key="before-after" className="mx-auto w-full max-w-[640px]">
+            <div className="mb-6 text-center">
+              <h2 className="font-display text-[clamp(28px,3.4vw,40px)] font-extrabold leading-[0.98]">
+                Hear it, don&apos;t just take our word for it.
+              </h2>
+              <p className="mt-3 text-[14.5px] text-muted">
+                Same track, before and after. Flip between them and listen for
+                yourself.
+              </p>
+            </div>
+            <BeforeAfterPlayer />
+          </div>,
           <div key="packs">
             <ProductGrid products={packs} />
+          </div>,
+          <div key="testimonials" className="w-full">
+            <div className="mb-8 text-center">
+              <h2 className="font-display text-[clamp(28px,3.4vw,40px)] font-extrabold leading-[0.98]">
+                What people are saying.
+              </h2>
+            </div>
+            <Testimonials />
           </div>,
           <div key="connect" id="connect" className="mx-auto max-w-[1180px] px-8 text-center">
             <div className="mx-auto flex items-center justify-center gap-2.5 font-mono text-[13px] tracking-[0.08em] text-muted">
@@ -132,9 +162,11 @@ export default function Home() {
               talking to the person who&apos;ll actually work on it.
             </p>
             <div className="mt-8 flex justify-center">
-              <ParticleButton variant="signal" size="lg" className="font-mono text-[13.5px]">
-                Start a project
-              </ParticleButton>
+              <a href="https://wavmastering.vercel.app" target="_blank" rel="noopener">
+                <ParticleButton variant="signal" size="lg" className="font-mono text-[13.5px]">
+                  Start a project
+                </ParticleButton>
+              </a>
             </div>
           </div>,
         ]}

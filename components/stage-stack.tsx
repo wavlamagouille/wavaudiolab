@@ -57,9 +57,17 @@ function computeOpacity(progress: number, i: number, n: number): number {
 export default function StageStack({
   stages,
   id,
+  lastStageDecoration,
 }: {
   stages: React.ReactNode[];
   id?: string;
+  // rendered as a sibling to the centered content column, inside the
+  // last stage's own full-width layer — not position:fixed, which breaks
+  // if any ancestor has a CSS transform (Motion's page-transition wrapper
+  // does), silently switching fixed's containing block away from the
+  // true viewport and letting it drift as that ancestor's content moves.
+  // A full-width absolute-positioned sibling has no such gotcha.
+  lastStageDecoration?: React.ReactNode;
 }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const layerRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -173,6 +181,7 @@ export default function StageStack({
               i === 0 ? "lg:absolute lg:inset-0" : "lg:absolute lg:inset-0 lg:opacity-0"
             }`}
           >
+            {i === stages.length - 1 && lastStageDecoration}
             <div className="mx-auto w-full max-w-[1180px] px-8">{stage}</div>
           </div>
         ))}

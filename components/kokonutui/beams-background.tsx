@@ -50,7 +50,7 @@ function createBeam(width: number, height: number): Beam {
 }
 
 export default function BeamsBackground({
-  intensity = "medium",
+  intensity = "strong",
 }: {
   intensity?: "subtle" | "medium" | "strong";
 }) {

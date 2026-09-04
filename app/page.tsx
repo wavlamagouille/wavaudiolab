@@ -61,7 +61,7 @@ export default function Home() {
                 className="inline-flex items-center gap-2 rounded-full border border-line-2 px-6 py-[15px] font-mono text-[13.5px] transition-colors hover:border-text"
                 href="/studio"
               >
-                Get a quote
+                Start a project
               </Link>
             </div>
           </div>,
@@ -79,7 +79,7 @@ export default function Home() {
                 className="mt-7 inline-flex items-center gap-2 rounded-full border border-line-2 px-6 py-[15px] font-mono text-[13.5px] transition-colors hover:border-text"
                 href="/studio"
               >
-                Send your stems →
+                Start a project
               </Link>
             </div>
             <div className="rounded-2xl border border-line bg-panel px-7 py-6">
@@ -120,7 +120,7 @@ export default function Home() {
                 className="mt-7 inline-flex items-center gap-2 rounded-full border border-line-2 px-6 py-[15px] font-mono text-[13.5px] transition-colors hover:border-text"
                 href="/studio"
               >
-                Send your premaster →
+                Start a project
               </Link>
             </div>
           </div>,

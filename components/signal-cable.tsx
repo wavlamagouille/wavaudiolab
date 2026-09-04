@@ -12,6 +12,7 @@ import JackPlug3D from "./jack-plug-3d";
 // a guessed coordinate) so it visually docks precisely instead of just
 // arriving near it. The socket also lights up once fully docked.
 const VIEWBOX_W = 40;
+const HEADER_HEIGHT = 76; // px — must match SiteHeader's h-[76px] and StageStack's own constant
 const VIEWBOX_H = 2000;
 
 const CABLE_PATH = `M20,0
@@ -58,16 +59,18 @@ export default function SignalCable() {
     let docked = false;
 
     function update() {
-      // progress targets the end of the main scroll sequence (the
-      // StageStack, id="mixing") rather than the full document —
-      // otherwise the cable only finishes drawing and docking once
-      // scrolled all the way through the footer too, well past where
-      // the actual content and the mixer socket now sit.
+      // progress targets the exact point where StageStack's crossfade
+      // settles on its final stage (read from the data-dock-fraction
+      // attribute it sets itself, so both stay perfectly in sync) rather
+      // than the wrapper's true end or the full document — those include
+      // the deliberate settle time and/or the footer, both of which sit
+      // past where the visible content and the mixer socket now are.
       const stackEl = document.getElementById("mixing");
       let range: number;
       if (stackEl) {
-        const stackBottom = stackEl.offsetTop + stackEl.offsetHeight;
-        range = stackBottom - window.innerHeight;
+        const dockFraction = parseFloat(stackEl.dataset.dockFraction || "1");
+        const stageRange = stackEl.offsetHeight - (window.innerHeight - HEADER_HEIGHT);
+        range = dockFraction * stageRange + stackEl.offsetTop - HEADER_HEIGHT;
       } else {
         const doc = document.documentElement;
         range = doc.scrollHeight - window.innerHeight;

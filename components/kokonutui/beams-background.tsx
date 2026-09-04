@@ -50,13 +50,17 @@ function createBeam(width: number, height: number): Beam {
 }
 
 export default function BeamsBackground({
-  intensity = "subtle",
+  intensity = "medium",
 }: {
   intensity?: "subtle" | "medium" | "strong";
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const beamsRef = useRef<Beam[]>([]);
   const animationFrameRef = useRef<number>(0);
+  // just the latest position, no history — updating a ref on mousemove is
+  // essentially free, the actual cost would be in drawing more per frame,
+  // which this keeps to exactly one extra gradient call
+  const mouseRef = useRef({ x: -9999, y: -9999, active: 0 });
   const MINIMUM_BEAMS = 18;
 
   const opacityMap = {
@@ -92,6 +96,16 @@ export default function BeamsBackground({
 
     updateCanvasSize();
     window.addEventListener("resize", updateCanvasSize);
+
+    const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    function onMouseMove(e: MouseEvent) {
+      mouseRef.current.x = e.clientX;
+      mouseRef.current.y = e.clientY;
+      mouseRef.current.active = 1;
+    }
+    if (!isCoarsePointer) {
+      window.addEventListener("mousemove", onMouseMove, { passive: true });
+    }
 
     function resetBeam(beam: Beam, index: number, totalBeams: number) {
       if (!canvas) return beam;
@@ -132,6 +146,20 @@ export default function BeamsBackground({
       ctx.restore();
     }
 
+    function drawMouseGlow() {
+      if (!ctx || mouseRef.current.active === 0) return;
+      const { x, y } = mouseRef.current;
+      const radius = 260;
+      const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+      // same two-color signal system as the beams themselves, just a
+      // single warm wash following the cursor rather than a full beam
+      gradient.addColorStop(0, "hsla(358, 88%, 58%, 0.10)");
+      gradient.addColorStop(0.5, "hsla(32, 88%, 58%, 0.05)");
+      gradient.addColorStop(1, "hsla(32, 88%, 58%, 0)");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2);
+    }
+
     function animate() {
       if (!(canvas && ctx)) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -145,6 +173,7 @@ export default function BeamsBackground({
         }
         drawBeam(ctx, beam);
       });
+      drawMouseGlow();
 
       animationFrameRef.current = requestAnimationFrame(animate);
     }
@@ -158,13 +187,14 @@ export default function BeamsBackground({
 
     return () => {
       window.removeEventListener("resize", updateCanvasSize);
+      window.removeEventListener("mousemove", onMouseMove);
       if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     };
   }, [intensity]);
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[-2] overflow-hidden" aria-hidden="true">
-      <canvas className="absolute inset-0" ref={canvasRef} style={{ filter: "blur(26px)" }} />
+      <canvas className="absolute inset-0" ref={canvasRef} style={{ filter: "blur(18px)" }} />
       <motion.div
         animate={{ opacity: [0.03, 0.09, 0.03] }}
         className="absolute inset-0 bg-ink/10"

@@ -147,6 +147,7 @@ export default function Home() {
             <Testimonials />
           </div>,
           <div key="connect" id="connect" className="mx-auto max-w-[1180px] px-8 text-center">
+            <MixerJack />
             <div className="mx-auto flex items-center justify-center gap-2.5 font-mono text-[13px] tracking-[0.08em] text-muted">
               <RecDot /> SIGNAL OUT
             </div>
@@ -167,10 +168,6 @@ export default function Home() {
           </div>,
         ]}
       />
-
-      <div className="relative h-16">
-        <MixerJack />
-      </div>
 
       <SiteFooter />
     </>

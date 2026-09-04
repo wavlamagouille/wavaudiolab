@@ -63,6 +63,14 @@ export default function StageStack({
 }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const layerRefs = useRef<(HTMLDivElement | null)[]>([]);
+  // the fraction of the crossfade at which the final stage reaches full
+  // opacity — exposed as a data attribute so SignalCable can target
+  // "the last stage is fully visible" precisely, instead of "the sticky
+  // panel has fully released," which includes the deliberate settle time
+  // built in after that point and made the docking motion require extra
+  // scrolling past where the visible content actually finishes.
+  const n = stages.length;
+  const lastStageVisibleAt = 1 - 0.72 / n;
 
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -145,7 +153,12 @@ export default function StageStack({
   }, [stages.length]);
 
   return (
-    <div ref={wrapRef} id={id} className="relative lg:h-[300vh]">
+    <div
+      ref={wrapRef}
+      id={id}
+      data-dock-fraction={lastStageVisibleAt}
+      className="relative lg:h-[300vh]"
+    >
       <div
         className="lg:sticky lg:h-[calc(100vh-76px)] lg:overflow-hidden"
         style={{ top: `${HEADER_HEIGHT}px` }}

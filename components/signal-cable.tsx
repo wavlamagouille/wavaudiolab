@@ -2,20 +2,14 @@
 
 import { useEffect, useRef } from "react";
 
-// The cable itself: two layered strokes sharing the same path — a wide
-// dark "jacket" and a thinner, offset-lighter "highlight" running along
-// one edge — which is what actually reads as a rounded, cylindrical cable
-// rather than a flat line. Both draw in together, tied directly to overall
-// page scroll progress (real getBoundingClientRect/scrollY math, not
-// anime.js's scroll-sync API — used it a lot elsewhere in this build with
-// mixed results, and this effect specifically needs pixel-exact control
-// since a real plug has to land exactly on the drawn tip).
-//
-// The viewBox width (40) is chosen to numerically match the CSS width
-// (w-10 = 40px) so horizontal scaling is exactly 1:1 — only the vertical
-// axis stretches to match the page's real height, which keeps the cable's
-// side-to-side winding undistorted and makes the plug's position math a
-// single scale factor instead of two.
+// Real black cable + a jack plug modeled on an actual 1/4" TRS connector:
+// a knurled brass grip section, a dark insulator ring, then a tapered
+// polished tip — not a generic cylinder. The plug rides the drawn tip of
+// the cable via getPointAtLength during normal scrolling, then in the
+// final stretch smoothly hands off to the mixer socket's own *measured*
+// real position (getBoundingClientRect on the actual socket element, not
+// a guessed coordinate) so it visually docks precisely instead of just
+// arriving near it. The socket also lights up once fully docked.
 const VIEWBOX_W = 40;
 const VIEWBOX_H = 2000;
 
@@ -31,29 +25,34 @@ const CABLE_PATH = `M20,0
   C 36,1370 4,1400 4,1470
   C 4,1540 36,1570 36,1640
   C 36,1710 4,1740 4,1810
-  C 4,1880 20,1920 20,1980`;
+  C 4,1880 20,1920 20,1960`;
+
+// once overall scroll progress passes this point, the plug stops
+// following the raw path math and eases into the socket's real position
+const DOCK_START = 0.975;
 
 export default function SignalCable() {
   const svgRef = useRef<SVGSVGElement>(null);
   const jacketRef = useRef<SVGPathElement>(null);
-  const highlightRef = useRef<SVGPathElement>(null);
   const plugRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const svg = svgRef.current;
     const jacket = jacketRef.current;
-    const highlight = highlightRef.current;
     const plug = plugRef.current;
-    if (!svg || !jacket || !highlight || !plug) return;
+    if (!svg || !jacket || !plug) return;
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduceMotion) return;
 
     const length = jacket.getTotalLength();
-    jacket.style.strokeDasharray = `${length}`;
-    highlight.style.strokeDasharray = `${length}`;
+    const allStrokes = svg.querySelectorAll<SVGPathElement>("[data-cable-stroke]");
+    allStrokes.forEach((el) => {
+      el.style.strokeDasharray = `${length}`;
+    });
 
     let rafId = 0;
+    let docked = false;
 
     function update() {
       const doc = document.documentElement;
@@ -61,19 +60,47 @@ export default function SignalCable() {
       const progress = range > 0 ? Math.min(1, Math.max(0, window.scrollY / range)) : 0;
 
       const offset = length * (1 - progress);
-      jacket!.style.strokeDashoffset = `${offset}`;
-      highlight!.style.strokeDashoffset = `${offset}`;
+      allStrokes.forEach((el) => {
+        el.style.strokeDashoffset = `${offset}`;
+      });
 
-      // position the plug at the exact current tip of the drawn line
-      const drawnLength = length * progress;
-      const point = jacket!.getPointAtLength(drawnLength);
+      const wrapperRect = svg!.parentElement!.getBoundingClientRect();
+      const point = jacket!.getPointAtLength(length * progress);
       const svgRect = svg!.getBoundingClientRect();
       const scaleY = svgRect.height / VIEWBOX_H;
-      const px = point.x; // scaleX is 1:1 by design
-      const py = point.y * scaleY;
 
-      plug!.style.opacity = progress > 0.005 ? "1" : "0";
-      plug!.style.transform = `translate(${px - 9}px, ${py - 4}px)`;
+      let px = point.x;
+      let py = point.y * scaleY;
+
+      if (progress > DOCK_START) {
+        const socket = document.getElementById("mixer-jack-socket");
+        if (socket) {
+          const socketRect = socket.getBoundingClientRect();
+          const targetX = socketRect.left + socketRect.width / 2 - wrapperRect.left;
+          const targetY = socketRect.top + socketRect.height / 2 - wrapperRect.top;
+          const dockT = Math.min(1, (progress - DOCK_START) / (1 - DOCK_START));
+          px = px + (targetX - px) * dockT;
+          py = py + (targetY - py) * dockT;
+
+          const glow = document.getElementById("mixer-jack-glow");
+          if (dockT > 0.85 && !docked) {
+            docked = true;
+            if (glow) {
+              glow.style.opacity = "1";
+              glow.style.strokeWidth = "2";
+            }
+          } else if (dockT <= 0.85 && docked) {
+            docked = false;
+            if (glow) {
+              glow.style.opacity = "0.55";
+              glow.style.strokeWidth = "1";
+            }
+          }
+        }
+      }
+
+      plug!.style.opacity = progress > 0.004 ? "1" : "0";
+      plug!.style.transform = `translate(${px - 8}px, ${py}px)`;
 
       rafId = requestAnimationFrame(update);
     }
@@ -92,50 +119,63 @@ export default function SignalCable() {
         viewBox={`0 0 ${VIEWBOX_W} ${VIEWBOX_H}`}
         preserveAspectRatio="none"
       >
-        {/* wide dark jacket */}
+        {/* black rubber cable jacket */}
         <path
           ref={jacketRef}
+          data-cable-stroke
           d={CABLE_PATH}
           fill="none"
-          stroke="#2a0c0e"
-          strokeWidth="7"
+          stroke="#161616"
+          strokeWidth="6.5"
           strokeLinecap="round"
-          opacity="0.85"
         />
-        {/* thin bright highlight, offset toward one side for a rounded look */}
+        {/* subtle rounded highlight for cylindrical depth */}
         <path
-          ref={highlightRef}
+          data-cable-stroke
+          d={CABLE_PATH}
+          fill="none"
+          stroke="#3a3a3a"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          transform="translate(-1.8, 0)"
+          opacity="0.7"
+        />
+        {/* thin signal-red tracer thread, a real cable detail */}
+        <path
+          data-cable-stroke
           d={CABLE_PATH}
           fill="none"
           stroke="var(--color-signal)"
-          strokeWidth="2"
+          strokeWidth="0.6"
           strokeLinecap="round"
-          opacity="0.75"
-          transform="translate(-1.6, 0)"
+          transform="translate(1.6, 0)"
+          opacity="0.85"
         />
       </svg>
 
-      {/* the jack plug riding the drawn tip */}
-      <div
-        ref={plugRef}
-        className="absolute left-0 top-0 opacity-0"
-        style={{ willChange: "transform" }}
-      >
-        <svg width="18" height="34" viewBox="0 0 18 34">
+      {/* the jack plug — knurled brass grip, insulator ring, tapered tip */}
+      <div ref={plugRef} className="absolute left-0 top-0 opacity-0" style={{ willChange: "transform" }}>
+        <svg width="16" height="44" viewBox="0 0 16 44">
           <defs>
-            <linearGradient id="plugBody" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#8a8f96" />
-              <stop offset="35%" stopColor="#e8ebee" />
-              <stop offset="55%" stopColor="#c2c7cc" />
-              <stop offset="100%" stopColor="#6b7075" />
+            <linearGradient id="plugGold" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#6b4d18" />
+              <stop offset="28%" stopColor="#e8c766" />
+              <stop offset="48%" stopColor="#fff3c4" />
+              <stop offset="68%" stopColor="#d4a637" />
+              <stop offset="100%" stopColor="#5c4212" />
             </linearGradient>
           </defs>
-          {/* plug tip */}
-          <path d="M9,0 C13,0 16,3 16,7 L16,9 L2,9 L2,7 C2,3 5,0 9,0 Z" fill="url(#plugBody)" />
-          {/* insulator ring */}
-          <rect x="1" y="9" width="16" height="3" fill="var(--color-signal)" opacity="0.9" />
-          {/* body / sleeve */}
-          <rect x="2" y="12" width="14" height="22" rx="2" fill="url(#plugBody)" />
+          {/* knurled grip body */}
+          <rect x="2" y="0" width="12" height="19" fill="url(#plugGold)" />
+          {[2.5, 5, 7.5, 10, 12.5, 15, 17.5].map((y) => (
+            <line key={y} x1="2" y1={y} x2="14" y2={y} stroke="#4a350f" strokeWidth="0.6" opacity="0.6" />
+          ))}
+          {/* dark insulator ring */}
+          <rect x="2" y="19" width="12" height="2.4" fill="#101112" />
+          {/* tapered neck to tip */}
+          <path d="M2,21.4 L14,21.4 L11,38 L5,38 Z" fill="url(#plugGold)" />
+          {/* rounded polished tip */}
+          <circle cx="8" cy="40" r="2.6" fill="url(#plugGold)" />
         </svg>
       </div>
     </div>

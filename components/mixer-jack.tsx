@@ -18,9 +18,19 @@ export default function MixerJack() {
         <circle cx="8" cy="44" r="1.6" fill="#3a3d40" />
         <circle cx="38" cy="44" r="1.6" fill="#3a3d40" />
         {/* socket ring */}
-        <circle cx="23" cy="26" r="11" fill="#0b0c0d" stroke="#454850" strokeWidth="2" />
+        <circle id="mixer-jack-socket" cx="23" cy="26" r="11" fill="#0b0c0d" stroke="#454850" strokeWidth="2" />
         <circle cx="23" cy="26" r="6.5" fill="#000000" />
-        <circle cx="23" cy="26" r="6.5" fill="none" stroke="var(--color-signal)" strokeWidth="1" opacity="0.55" />
+        <circle
+          id="mixer-jack-glow"
+          cx="23"
+          cy="26"
+          r="6.5"
+          fill="none"
+          stroke="var(--color-signal)"
+          strokeWidth="1"
+          opacity="0.55"
+          style={{ transition: "opacity 0.4s ease, stroke-width 0.4s ease" }}
+        />
         {/* label */}
         <text
           x="23"

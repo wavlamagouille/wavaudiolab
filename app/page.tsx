@@ -65,6 +65,18 @@ export default function Home() {
               </Link>
             </div>
           </div>,
+          <div key="before-after" className="mx-auto w-full max-w-[640px]">
+            <div className="mb-6 text-center">
+              <h2 className="font-display text-[clamp(28px,3.4vw,40px)] font-extrabold leading-[0.98]">
+                Hear it, don&apos;t just take our word for it.
+              </h2>
+              <p className="mt-3 text-[14.5px] text-muted">
+                Same track, before and after. Flip between them and listen for
+                yourself.
+              </p>
+            </div>
+            <BeforeAfterPlayer />
+          </div>,
           <div key="mixing" className="grid items-start gap-[70px] md:grid-cols-[1.1fr_.9fr]">
             <div>
               <h2 className="max-w-[460px] font-display text-[clamp(34px,4vw,54px)] font-extrabold leading-[0.94]">
@@ -123,18 +135,6 @@ export default function Home() {
                 Start a project
               </Link>
             </div>
-          </div>,
-          <div key="before-after" className="mx-auto w-full max-w-[640px]">
-            <div className="mb-6 text-center">
-              <h2 className="font-display text-[clamp(28px,3.4vw,40px)] font-extrabold leading-[0.98]">
-                Hear it, don&apos;t just take our word for it.
-              </h2>
-              <p className="mt-3 text-[14.5px] text-muted">
-                Same track, before and after. Flip between them and listen for
-                yourself.
-              </p>
-            </div>
-            <BeforeAfterPlayer />
           </div>,
           <div key="packs">
             <ProductGrid products={packs} />

@@ -3,15 +3,23 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-// A real 3D jack plug built from primitive geometry — no model file needed,
-// since the shape is simple and fully rotationally symmetric. Two lathe
-// geometries (smooth tip section + knurled grip section, the knurling
-// built right into the profile as radius variation so real light actually
-// catches each ridge) plus a separate thin cylinder for the dark
-// insulator ring between them. Gold PBR material with three lights
-// standing in for a small studio setup — a metal like this reads as
-// "real" almost entirely through its highlights, which a flat icon can't
-// reproduce no matter how carefully the gradient is tuned.
+// Real 3D jack plug, take two. The shape logic is the same idea as before
+// (lathe-revolved gold body, separate dark insulator ring, knurled ridges
+// built into the geometry itself) but two real bugs are fixed here:
+//
+// 1. Camera framing was wrong by a lot. The object is ~9 units tall, but
+//    the perspective camera's distance and field of view only showed
+//    about 3.5 units of vertical space — meaning most of the object was
+//    cropped off-screen and what little showed was a tiny, unrecognizable
+//    sliver. Switched to an orthographic camera specifically because its
+//    framing is simple, fixed math (a view box you set directly) instead
+//    of distance/FOV trigonometry that's easy to get wrong blind.
+// 2. Proportions were too elongated (~5.5:1 height-to-diameter) for a
+//    real 1/4" jack, which is closer to ~2.8:1. Rebuilt at more realistic
+//    proportions.
+//
+// Lighting is also brighter overall and includes a stronger ambient
+// floor, since the previous version rendered too dark to read clearly.
 export default function JackPlug3D({ size = 60 }: { size?: number }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -21,10 +29,26 @@ export default function JackPlug3D({ size = 60 }: { size?: number }) {
 
     const width = size;
     const height = size * 2.75;
+    const aspect = width / height;
+
+    const OBJECT_HEIGHT = 9;
+    const OBJECT_RADIUS = 1.6;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(28, width / height, 0.1, 100);
-    camera.position.set(2.6, 0.6, 7);
+
+    // orthographic: screen size depends only on this view box, not on
+    // camera distance — verifiable by hand instead of guessed
+    const viewHeight = OBJECT_HEIGHT * 1.35; // margin around the object
+    const viewWidth = viewHeight * aspect;
+    const camera = new THREE.OrthographicCamera(
+      -viewWidth / 2,
+      viewWidth / 2,
+      viewHeight / 2,
+      -viewHeight / 2,
+      0.1,
+      100
+    );
+    camera.position.set(2.2, 0.4, 7);
     camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -33,9 +57,9 @@ export default function JackPlug3D({ size = 60 }: { size?: number }) {
     container.appendChild(renderer.domElement);
 
     const goldMaterial = new THREE.MeshStandardMaterial({
-      color: 0xcda43a,
-      metalness: 0.8,
-      roughness: 0.28,
+      color: 0xd6ad42,
+      metalness: 0.75,
+      roughness: 0.3,
     });
     const ringMaterial = new THREE.MeshStandardMaterial({
       color: 0x0c0d0e,
@@ -45,60 +69,76 @@ export default function JackPlug3D({ size = 60 }: { size?: number }) {
 
     const group = new THREE.Group();
 
+    const tipTop = OBJECT_HEIGHT * 0.47;
+    const ringHeight = OBJECT_HEIGHT * 0.06;
+    const gripTop = OBJECT_HEIGHT;
+    const gripBottom = tipTop + ringHeight;
+
     // smooth tip section, rounded cap at the very bottom
     const tipPoints = [
       new THREE.Vector2(0, 0),
-      new THREE.Vector2(0.32, 0.05),
-      new THREE.Vector2(0.62, 0.22),
-      new THREE.Vector2(0.82, 0.5),
-      new THREE.Vector2(0.88, 1.0),
-      new THREE.Vector2(0.88, 4.6),
+      new THREE.Vector2(OBJECT_RADIUS * 0.32, tipTop * 0.01),
+      new THREE.Vector2(OBJECT_RADIUS * 0.62, tipTop * 0.05),
+      new THREE.Vector2(OBJECT_RADIUS * 0.85, tipTop * 0.13),
+      new THREE.Vector2(OBJECT_RADIUS, tipTop * 0.28),
+      new THREE.Vector2(OBJECT_RADIUS, tipTop),
     ];
-    const tipGeo = new THREE.LatheGeometry(tipPoints, 32);
+    const tipGeo = new THREE.LatheGeometry(tipPoints, 40);
     const tip = new THREE.Mesh(tipGeo, goldMaterial);
     group.add(tip);
 
     // insulator ring
-    const ringGeo = new THREE.CylinderGeometry(0.9, 0.9, 0.5, 32);
+    const ringGeo = new THREE.CylinderGeometry(
+      OBJECT_RADIUS * 1.02,
+      OBJECT_RADIUS * 1.02,
+      ringHeight,
+      40
+    );
     const ring = new THREE.Mesh(ringGeo, ringMaterial);
-    ring.position.y = 4.85;
+    ring.position.y = tipTop + ringHeight / 2;
     group.add(ring);
 
     // knurled grip — radius alternates to build real ridge geometry
-    const gripPoints: THREE.Vector2[] = [new THREE.Vector2(0.88, 5.1)];
-    const ridgeCount = 7;
-    const gripTop = 9.6;
-    const gripBottom = 5.1;
+    const gripPoints: THREE.Vector2[] = [new THREE.Vector2(OBJECT_RADIUS, gripBottom)];
+    const ridgeCount = 6;
     for (let i = 0; i <= ridgeCount; i++) {
       const y = gripBottom + ((gripTop - gripBottom) * i) / ridgeCount;
-      gripPoints.push(new THREE.Vector2(0.88, y));
+      gripPoints.push(new THREE.Vector2(OBJECT_RADIUS, y));
       if (i < ridgeCount) {
-        gripPoints.push(new THREE.Vector2(0.72, y + (gripTop - gripBottom) / ridgeCount / 2));
+        gripPoints.push(
+          new THREE.Vector2(
+            OBJECT_RADIUS * 0.84,
+            y + (gripTop - gripBottom) / ridgeCount / 2
+          )
+        );
       }
     }
-    gripPoints.push(new THREE.Vector2(0.88, gripTop));
+    gripPoints.push(new THREE.Vector2(OBJECT_RADIUS, gripTop));
     gripPoints.push(new THREE.Vector2(0, gripTop)); // flat top cap
-    const gripGeo = new THREE.LatheGeometry(gripPoints, 32);
+    const gripGeo = new THREE.LatheGeometry(gripPoints, 40);
     const grip = new THREE.Mesh(gripGeo, goldMaterial);
     group.add(grip);
 
-    group.position.y = -4.5;
+    // center the whole object on the world origin, which is what the
+    // camera is looking at
+    group.position.y = -OBJECT_HEIGHT / 2;
     scene.add(group);
 
-    // lighting — a small studio setup, not a flat single light
-    const key = new THREE.DirectionalLight(0xffffff, 2.4);
-    key.position.set(3, 4, 5);
+    // lighting — brighter overall than the last version, with a real
+    // ambient floor so no angle of the rotation goes too dark
+    const key = new THREE.DirectionalLight(0xffffff, 3.2);
+    key.position.set(3, 3, 6);
     scene.add(key);
 
-    const fill = new THREE.PointLight(0xffd9a0, 1.1, 30);
-    fill.position.set(-3, 1, 3);
+    const fill = new THREE.DirectionalLight(0xffd9a0, 1.6);
+    fill.position.set(-4, 1, 3);
     scene.add(fill);
 
-    const rim = new THREE.PointLight(0xff2e3e, 1.4, 30);
-    rim.position.set(0, -3, -4);
+    const rim = new THREE.PointLight(0xff2e3e, 2, 30);
+    rim.position.set(-1, -3, -3);
     scene.add(rim);
 
-    const ambient = new THREE.AmbientLight(0xffffff, 0.35);
+    const ambient = new THREE.AmbientLight(0xffffff, 0.65);
     scene.add(ambient);
 
     let rafId = 0;

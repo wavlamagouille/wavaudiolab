@@ -35,6 +35,10 @@ body {
   background: var(--color-ink);
   color: var(--color-text);
   font-family: var(--font-sans);
+  /* the page transition slides pages a full viewport-width off to each
+     side — without this, that produces a horizontal scrollbar/overflow
+     for the duration of the animation */
+  overflow-x: hidden;
 }
 
 ::selection {

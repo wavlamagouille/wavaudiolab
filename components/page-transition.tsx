@@ -27,10 +27,10 @@ export default function PageTransition({ children }: { children: React.ReactNode
     <AnimatePresence mode="popLayout" initial={false}>
       <motion.div
         key={pathname}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
-        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        initial={{ opacity: 0, x: 40 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -40 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         className="relative"
       >
         {children}

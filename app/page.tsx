@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import ParticleButton from "@/components/kokonutui/particle-button";
 import ProductGrid, { type Product } from "@/components/product-grid";
@@ -10,10 +11,10 @@ import RecDot from "@/components/rec-dot";
 import StageStack from "@/components/stage-stack";
 import BeforeAfterPlayer from "@/components/before-after-player";
 import Testimonials from "@/components/testimonials";
-import MixerJack from "@/components/mixer-jack";
 import FlipCard from "@/components/flip-card";
 import CountUp from "@/components/count-up";
 import { products } from "@/lib/products";
+import { scrollToStage } from "@/lib/scroll-to-stage";
 
 const packs: Product[] = products.map((p) => ({
   slug: p.slug,
@@ -26,6 +27,20 @@ const packs: Product[] = products.map((p) => ({
 }));
 
 export default function Home() {
+  // arriving from another page via a header nav link (e.g. /#stage-mixing
+  // from the FAQ page) — the stage stack needs a moment to lay out and
+  // set its real height before a scroll target is meaningful, so this
+  // waits a tick rather than trying immediately on mount
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash.startsWith("#stage-")) return;
+    const name = hash.replace("#stage-", "");
+    const timer = window.setTimeout(() => {
+      scrollToStage(name);
+    }, 150);
+    return () => window.clearTimeout(timer);
+  }, []);
+
   return (
     <>
       <ScrollProgress />
@@ -36,7 +51,6 @@ export default function Home() {
       {/* ---------- HERO / MIXING / MASTERING / PACKS / CONNECT — sticky crossfade on desktop ---------- */}
       <StageStack
         id="mixing"
-        lastStageDecoration={<MixerJack />}
         stages={[
           <div key="hero" className="mx-auto max-w-[1180px] px-8">
             <div className="mb-7 flex items-center gap-2.5 font-mono text-[13px] tracking-[0.08em] text-muted">

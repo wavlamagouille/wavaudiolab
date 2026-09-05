@@ -42,7 +42,7 @@ const NORMAL_STAGE_VH = 60; // per-stage scroll allowance for every stage except
 // release happens almost immediately once the last stage is in view,
 // so scrolling into the footer feels like a continuation, not a jump
 // into a different mode.
-const LAST_STAGE_VH = 12;
+const LAST_STAGE_VH = 4;
 
 function computeOpacity(progress: number, i: number, boundaries: number[]): number {
   const n = boundaries.length - 1;
@@ -75,17 +75,9 @@ function computeOpacity(progress: number, i: number, boundaries: number[]): numb
 export default function StageStack({
   stages,
   id,
-  lastStageDecoration,
 }: {
   stages: React.ReactNode[];
   id?: string;
-  // rendered as a sibling to the centered content column, inside the
-  // last stage's own full-width layer — not position:fixed, which breaks
-  // if any ancestor has a CSS transform (Motion's page-transition wrapper
-  // does), silently switching fixed's containing block away from the
-  // true viewport and letting it drift as that ancestor's content moves.
-  // A full-width absolute-positioned sibling has no such gotcha.
-  lastStageDecoration?: React.ReactNode;
 }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const layerRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -177,27 +169,34 @@ export default function StageStack({
       ref={wrapRef}
       id={id}
       data-dock-fraction={lastStageVisibleAt}
+      data-boundaries={JSON.stringify(boundaries)}
       className="relative lg:h-[300vh]"
     >
       <div
         className="lg:sticky lg:h-[calc(100vh-76px)] lg:overflow-hidden"
         style={{ top: `${HEADER_HEIGHT}px` }}
       >
-        {stages.map((stage, i) => (
-          <div
-            key={i}
-            data-stage-layer
-            ref={(el) => {
-              layerRefs.current[i] = el;
-            }}
-            className={`py-24 lg:flex lg:items-center lg:py-0 ${
-              i === 0 ? "lg:absolute lg:inset-0" : "lg:absolute lg:inset-0 lg:opacity-0"
-            }`}
-          >
-            {i === stages.length - 1 && lastStageDecoration}
-            <div className="mx-auto w-full max-w-[1180px] px-8">{stage}</div>
-          </div>
-        ))}
+        {stages.map((stage, i) => {
+          const stageName =
+            typeof stage === "object" && stage !== null && "key" in stage
+              ? stage.key
+              : undefined;
+          return (
+            <div
+              key={i}
+              data-stage-layer
+              data-stage-name={stageName}
+              ref={(el) => {
+                layerRefs.current[i] = el;
+              }}
+              className={`py-24 lg:flex lg:items-center lg:py-0 ${
+                i === 0 ? "lg:absolute lg:inset-0" : "lg:absolute lg:inset-0 lg:opacity-0"
+              }`}
+            >
+              <div className="mx-auto w-full max-w-[1180px] px-8">{stage}</div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

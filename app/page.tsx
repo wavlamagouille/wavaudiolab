@@ -120,25 +120,30 @@ export default function Home() {
                 back={
                   <div className="rounded-2xl border border-line bg-panel px-7 pb-6 pt-14">
                     <div className="mb-3 font-mono text-[11px] tracking-[0.1em] text-signal">
-                      HOW IT WORKS
+                      HOW THE TOOL WORKS
                     </div>
                     <ol className="space-y-3 text-[13.5px] leading-relaxed text-muted">
                       <li>
-                        <span className="text-text">1. Upload your premaster</span> — through
-                        the Studio tool, no email attachments to wrangle.
+                        <span className="text-text">1. Sign in to the Studio</span> — one
+                        account for every project, past and future.
                       </li>
                       <li>
-                        <span className="text-text">2. A real engineer works on it</span> —
-                        not a preset chain or an algorithm guessing at loudness.
+                        <span className="text-text">2. Upload your premaster</span> — plus a
+                        reference track and any notes on what you want out
+                        of it.
                       </li>
                       <li>
-                        <span className="text-text">3. Checked properly</span> — against your
-                        reference track, in mono, and on more than one
-                        playback system.
+                        <span className="text-text">3. Pick mastering or stem mastering</span> —
+                        and submit, no back-and-forth emails needed.
                       </li>
                       <li>
-                        <span className="text-text">4. Delivered in 2–4 days</span> —
-                        revisions included until it&apos;s right.
+                        <span className="text-text">4. Track it from your dashboard</span> —
+                        see the status and message directly if anything
+                        needs adjusting.
+                      </li>
+                      <li>
+                        <span className="text-text">5. Download your master</span> — WAV
+                        24-bit and 16-bit versions, ready to release.
                       </li>
                     </ol>
                   </div>

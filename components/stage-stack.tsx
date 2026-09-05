@@ -42,9 +42,15 @@ function computeOpacity(progress: number, i: number, n: number): number {
     return 1 - (progress - (endAt - crossfade)) / crossfade;
   }
   if (i === n - 1) {
+    // extends all the way to progress=1 (the sticky panel's actual
+    // release point), not just startAt+crossfade like every other
+    // transition — leaving a "dead zone" there where the stage sits
+    // fully visible with nothing changing until the panel suddenly
+    // released and jumped, since all the scroll that happened during
+    // that dead zone had to be accounted for in one snap.
     if (progress <= startAt) return 0;
-    if (progress >= startAt + crossfade) return 1;
-    return (progress - startAt) / crossfade;
+    if (progress >= 1) return 1;
+    return (progress - startAt) / (1 - startAt);
   }
   if (progress <= startAt) return 0;
   if (progress <= startAt + crossfade) return (progress - startAt) / crossfade;
@@ -71,13 +77,11 @@ export default function StageStack({
   const wrapRef = useRef<HTMLDivElement>(null);
   const layerRefs = useRef<(HTMLDivElement | null)[]>([]);
   // the fraction of the crossfade at which the final stage reaches full
-  // opacity — exposed as a data attribute so SignalCable can target
-  // "the last stage is fully visible" precisely, instead of "the sticky
-  // panel has fully released," which includes the deliberate settle time
-  // built in after that point and made the docking motion require extra
-  // scrolling past where the visible content actually finishes.
-  const n = stages.length;
-  const lastStageVisibleAt = 1 - 0.72 / n;
+  // exposed as a data attribute so SignalCable can target the same
+  // release point StageStack itself uses — now that the last stage's
+  // fade-in extends all the way to progress=1, that release point IS
+  // when the crossfade visually settles, so this is just 1.
+  const lastStageVisibleAt = 1;
 
   useEffect(() => {
     const wrap = wrapRef.current;

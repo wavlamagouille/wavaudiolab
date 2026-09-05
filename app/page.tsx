@@ -91,7 +91,7 @@ export default function Home() {
             </div>
             <FlipCard
               front={
-                <div className="rounded-2xl border border-line bg-panel px-7 pb-6 pt-14">
+                <div className="rounded-2xl border border-line bg-panel px-7 pt-6 pb-14">
                   <SpecRow k="Up to 9 channels" count={100} suffix=" CHF" />
                   <SpecRow k="Up to 14 channels" count={125} suffix=" CHF" />
                   <SpecRow k="Up to 19 channels" count={150} suffix=" CHF" />
@@ -105,7 +105,7 @@ export default function Home() {
                 </div>
               }
               back={
-                <div className="rounded-2xl border border-line bg-panel px-7 pb-6 pt-14">
+                <div className="rounded-2xl border border-line bg-panel px-7 pt-6 pb-14">
                   <div className="mb-3 font-mono text-[11px] tracking-[0.1em] text-signal">
                     HOW THE TOOL WORKS
                   </div>
@@ -141,7 +141,7 @@ export default function Home() {
             <div className="md:order-2">
               <FlipCard
                 front={
-                  <div className="rounded-2xl border border-line bg-panel px-7 pb-6 pt-14">
+                  <div className="rounded-2xl border border-line bg-panel px-7 pt-6 pb-14">
                     <SpecRow k="Mastering, per track" count={25} suffix=" CHF" />
                     <SpecRow k="Stem mastering, per track" count={50} suffix=" CHF" />
                     <SpecRow k="Turnaround" v="Typically 2–4 days" hi />
@@ -153,7 +153,7 @@ export default function Home() {
                   </div>
                 }
                 back={
-                  <div className="rounded-2xl border border-line bg-panel px-7 pb-6 pt-14">
+                  <div className="rounded-2xl border border-line bg-panel px-7 pt-6 pb-14">
                     <div className="mb-3 font-mono text-[11px] tracking-[0.1em] text-signal">
                       HOW THE TOOL WORKS
                     </div>

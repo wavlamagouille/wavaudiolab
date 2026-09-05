@@ -29,12 +29,27 @@ import { useEffect, useRef } from "react";
 // Mobile: none of this — falls back to plain stacked flow via CSS
 // breakpoints only, same as before.
 const HEADER_HEIGHT = 76; // px — must match SiteHeader's h-[76px]
+const NORMAL_STAGE_VH = 60; // per-stage scroll allowance for every stage except the last
+// The last stage doesn't need anywhere near as much sticky dwell time —
+// it has nothing to cross-fade into afterward, just needs to fade in
+// and then hand off to the footer. Giving it the same 60vh as every
+// other stage meant a long stretch where it sat fully visible with the
+// panel still pinned before the sticky mechanism finally released and
+// the footer's normal scroll took over — which read as a sudden "phase
+// change" no matter how smooth the underlying math was, since scrolling
+// suddenly started actually moving content after a long stretch where
+// it visibly didn't. Shrinking this to a small fraction means the
+// release happens almost immediately once the last stage is in view,
+// so scrolling into the footer feels like a continuation, not a jump
+// into a different mode.
+const LAST_STAGE_VH = 12;
 
-function computeOpacity(progress: number, i: number, n: number): number {
-  const segment = 1 / n;
-  const crossfade = segment * 0.28;
-  const startAt = i * segment;
-  const endAt = (i + 1) * segment;
+function computeOpacity(progress: number, i: number, boundaries: number[]): number {
+  const n = boundaries.length - 1;
+  const segment = boundaries[i + 1] - boundaries[i];
+  const crossfade = Math.min(segment * 0.28, (boundaries[1] - boundaries[0]) * 0.28);
+  const startAt = boundaries[i];
+  const endAt = boundaries[i + 1];
 
   if (i === 0) {
     if (progress <= endAt - crossfade) return 1;
@@ -42,12 +57,10 @@ function computeOpacity(progress: number, i: number, n: number): number {
     return 1 - (progress - (endAt - crossfade)) / crossfade;
   }
   if (i === n - 1) {
-    // extends all the way to progress=1 (the sticky panel's actual
-    // release point), not just startAt+crossfade like every other
-    // transition — leaving a "dead zone" there where the stage sits
-    // fully visible with nothing changing until the panel suddenly
-    // released and jumped, since all the scroll that happened during
-    // that dead zone had to be accounted for in one snap.
+    // fades in across its own (much shorter) segment, reaching full
+    // opacity exactly at progress=1 — the sticky panel's real release
+    // point — so there's no dwell time where nothing changes before it
+    // lets go.
     if (progress <= startAt) return 0;
     if (progress >= 1) return 1;
     return (progress - startAt) / (1 - startAt);
@@ -76,11 +89,19 @@ export default function StageStack({
 }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const layerRefs = useRef<(HTMLDivElement | null)[]>([]);
-  // the fraction of the crossfade at which the final stage reaches full
-  // exposed as a data attribute so SignalCable can target the same
-  // release point StageStack itself uses — now that the last stage's
-  // fade-in extends all the way to progress=1, that release point IS
-  // when the crossfade visually settles, so this is just 1.
+  const n = stages.length;
+  // total scroll allowance: every stage gets the normal share except the
+  // last, which gets a much smaller one (see LAST_STAGE_VH above)
+  const totalVh = (n - 1) * NORMAL_STAGE_VH + LAST_STAGE_VH;
+  // boundaries as fractions of the total (0 to 1), one per stage edge —
+  // stage i spans boundaries[i] to boundaries[i+1]
+  const boundaries: number[] = [];
+  for (let i = 0; i <= n; i++) {
+    const vhSoFar = i < n ? i * NORMAL_STAGE_VH : (n - 1) * NORMAL_STAGE_VH + LAST_STAGE_VH;
+    boundaries.push(vhSoFar / totalVh);
+  }
+  // the release point IS when the last stage's fade-in completes, by
+  // construction — exposed for SignalCable to target the same point
   const lastStageVisibleAt = 1;
 
   useEffect(() => {
@@ -92,7 +113,7 @@ export default function StageStack({
 
     function applyHeight() {
       if (!wrap || !isDesktop) return;
-      wrap!.style.height = `${stages.length * 60}vh`;
+      wrap!.style.height = `${totalVh}vh`;
     }
 
     if (isDesktop) {
@@ -126,7 +147,7 @@ export default function StageStack({
 
       layerRefs.current.forEach((layer, i) => {
         if (!layer) return;
-        const opacity = computeOpacity(progress, i, stages.length);
+        const opacity = computeOpacity(progress, i, boundaries);
         layer.style.opacity = String(opacity);
         layer.style.pointerEvents = opacity > 0.5 ? "auto" : "none";
       });

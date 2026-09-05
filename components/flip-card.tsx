@@ -54,7 +54,7 @@ export default function FlipCard({
         {front}
         <button
           onClick={toggle}
-          className="absolute right-5 top-5 flex items-center gap-1.5 rounded-full border border-line-2 bg-panel-2 px-3 py-1.5 font-mono text-[11px] text-muted transition-colors hover:border-signal hover:text-signal"
+          className="absolute bottom-5 right-5 flex items-center gap-1.5 rounded-full border border-line-2 bg-panel-2 px-3 py-1.5 font-mono text-[11px] text-muted transition-colors hover:border-signal hover:text-signal"
           aria-label="More info about the mastering process"
         >
           <Info size={12} /> More info
@@ -64,7 +64,7 @@ export default function FlipCard({
         {back}
         <button
           onClick={toggle}
-          className="absolute right-5 top-5 flex items-center gap-1.5 rounded-full border border-line-2 bg-panel-2 px-3 py-1.5 font-mono text-[11px] text-muted transition-colors hover:border-signal hover:text-signal"
+          className="absolute bottom-5 right-5 flex items-center gap-1.5 rounded-full border border-line-2 bg-panel-2 px-3 py-1.5 font-mono text-[11px] text-muted transition-colors hover:border-signal hover:text-signal"
           aria-label="Back to pricing"
         >
           <X size={12} /> Back

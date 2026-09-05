@@ -31,22 +31,29 @@ export default function PageTransition({ children }: { children: React.ReactNode
   const reduceMotion = useReducedMotion();
 
   if (reduceMotion) {
-    return <>{children}</>;
+    return (
+      <>
+        {children}
+        <SignalCable />
+      </>
+    );
   }
 
   return (
-    <AnimatePresence mode="popLayout" initial={false}>
-      <motion.div
-        key={pathname}
-        initial={{ x: "100%" }}
-        animate={{ x: 0 }}
-        exit={{ x: "-100%" }}
-        transition={{ duration: 0.45, ease: [0.65, 0, 0.35, 1] }}
-        className="relative"
-      >
-        {children}
-        <SignalCable />
-      </motion.div>
-    </AnimatePresence>
+    <>
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.div
+          key={pathname}
+          initial={{ x: "100%" }}
+          animate={{ x: 0 }}
+          exit={{ x: "-100%" }}
+          transition={{ duration: 0.45, ease: "easeInOut" }}
+          className="w-screen"
+        >
+          {children}
+        </motion.div>
+      </AnimatePresence>
+      <SignalCable />
+    </>
   );
 }

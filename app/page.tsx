@@ -11,6 +11,7 @@ import StageStack from "@/components/stage-stack";
 import BeforeAfterPlayer from "@/components/before-after-player";
 import Testimonials from "@/components/testimonials";
 import MixerJack from "@/components/mixer-jack";
+import FlipCard from "@/components/flip-card";
 import CountUp from "@/components/count-up";
 import { products } from "@/lib/products";
 
@@ -57,12 +58,6 @@ export default function Home() {
                   Start a project
                 </ParticleButton>
               </Link>
-              <Link
-                className="inline-flex items-center gap-2 rounded-full border border-line-2 px-6 py-[15px] font-mono text-[13.5px] transition-colors hover:border-text"
-                href="/studio"
-              >
-                Start a project
-              </Link>
             </div>
           </div>,
           <div key="before-after" className="mx-auto w-full max-w-[640px]">
@@ -108,15 +103,47 @@ export default function Home() {
             </div>
           </div>,
           <div key="mastering" className="grid items-start gap-[70px] md:grid-cols-[.9fr_1.1fr]">
-            <div className="rounded-2xl border border-line bg-panel px-7 py-6 md:order-2">
-              <SpecRow k="Mastering, per track" count={25} suffix=" CHF" />
-              <SpecRow k="Stem mastering, per track" count={50} suffix=" CHF" />
-              <SpecRow k="Turnaround" v="Typically 2–4 days" hi />
-              <SpecRow k="Formats" v="WAV 24/16-bit" last />
-              <p className="mt-4 text-[12.5px] leading-relaxed text-muted-2">
-                Delivered with your loudness target hit and logged, not
-                guessed at.
-              </p>
+            <div className="md:order-2">
+              <FlipCard
+                front={
+                  <div className="rounded-2xl border border-line bg-panel px-7 pb-6 pt-14">
+                    <SpecRow k="Mastering, per track" count={25} suffix=" CHF" />
+                    <SpecRow k="Stem mastering, per track" count={50} suffix=" CHF" />
+                    <SpecRow k="Turnaround" v="Typically 2–4 days" hi />
+                    <SpecRow k="Formats" v="WAV 24/16-bit" last />
+                    <p className="mt-4 text-[12.5px] leading-relaxed text-muted-2">
+                      Delivered with your loudness target hit and logged, not
+                      guessed at.
+                    </p>
+                  </div>
+                }
+                back={
+                  <div className="rounded-2xl border border-line bg-panel px-7 pb-6 pt-14">
+                    <div className="mb-3 font-mono text-[11px] tracking-[0.1em] text-signal">
+                      HOW IT WORKS
+                    </div>
+                    <ol className="space-y-3 text-[13.5px] leading-relaxed text-muted">
+                      <li>
+                        <span className="text-text">1. Upload your premaster</span> — through
+                        the Studio tool, no email attachments to wrangle.
+                      </li>
+                      <li>
+                        <span className="text-text">2. A real engineer works on it</span> —
+                        not a preset chain or an algorithm guessing at loudness.
+                      </li>
+                      <li>
+                        <span className="text-text">3. Checked properly</span> — against your
+                        reference track, in mono, and on more than one
+                        playback system.
+                      </li>
+                      <li>
+                        <span className="text-text">4. Delivered in 2–4 days</span> —
+                        revisions included until it&apos;s right.
+                      </li>
+                    </ol>
+                  </div>
+                }
+              />
             </div>
             <div className="md:order-1">
               <h2 className="max-w-[460px] font-display text-[clamp(34px,4vw,54px)] font-extrabold leading-[0.94]">

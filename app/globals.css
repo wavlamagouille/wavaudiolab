@@ -23,6 +23,12 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* old Edge/IE */
+}
+
+html::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
 }
 
 body {
@@ -45,4 +51,24 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Flip card: rotation and blur driven together, blur peaking at the
+   90-degree edge-on point then clearing as the new face comes into
+   view — a plain start/end transition can't produce this middle peak. */
+@keyframes flip-card-to-back {
+  0% { transform: rotateY(0deg); filter: blur(0px); }
+  50% { filter: blur(6px); }
+  100% { transform: rotateY(180deg); filter: blur(0px); }
+}
+@keyframes flip-card-to-front {
+  0% { transform: rotateY(180deg); filter: blur(0px); }
+  50% { filter: blur(6px); }
+  100% { transform: rotateY(0deg); filter: blur(0px); }
+}
+.flip-card-to-back {
+  animation: flip-card-to-back 550ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+.flip-card-to-front {
+  animation: flip-card-to-front 550ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }

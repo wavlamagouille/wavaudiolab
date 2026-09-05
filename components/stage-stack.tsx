@@ -161,6 +161,7 @@ export default function StageStack({
         {stages.map((stage, i) => (
           <div
             key={i}
+            data-stage-layer
             ref={(el) => {
               layerRefs.current[i] = el;
             }}

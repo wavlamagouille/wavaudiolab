@@ -89,18 +89,53 @@ export default function Home() {
                 Start a project
               </Link>
             </div>
-            <div className="rounded-2xl border border-line bg-panel px-7 py-6">
-              <SpecRow k="Up to 9 channels" count={100} suffix=" CHF" />
-              <SpecRow k="Up to 14 channels" count={125} suffix=" CHF" />
-              <SpecRow k="Up to 19 channels" count={150} suffix=" CHF" />
-              <SpecRow k="Up to 29 channels" count={175} suffix=" CHF" />
-              <SpecRow k="Up to 49 channels" count={200} suffix=" CHF" />
-              <SpecRow k="50+ channels" count={250} suffix=" CHF" hi last />
-              <p className="mt-4 text-[12.5px] leading-relaxed text-muted-2">
-                Monitoring calibrated with Sonarworks Reference 4. Revisions
-                included until it&apos;s right.
-              </p>
-            </div>
+            <FlipCard
+              front={
+                <div className="rounded-2xl border border-line bg-panel px-7 pb-6 pt-14">
+                  <SpecRow k="Up to 9 channels" count={100} suffix=" CHF" />
+                  <SpecRow k="Up to 14 channels" count={125} suffix=" CHF" />
+                  <SpecRow k="Up to 19 channels" count={150} suffix=" CHF" />
+                  <SpecRow k="Up to 29 channels" count={175} suffix=" CHF" />
+                  <SpecRow k="Up to 49 channels" count={200} suffix=" CHF" />
+                  <SpecRow k="50+ channels" count={250} suffix=" CHF" hi last />
+                  <p className="mt-4 text-[12.5px] leading-relaxed text-muted-2">
+                    Monitoring calibrated with Sonarworks Reference 4. Revisions
+                    included until it&apos;s right.
+                  </p>
+                </div>
+              }
+              back={
+                <div className="rounded-2xl border border-line bg-panel px-7 pb-6 pt-14">
+                  <div className="mb-3 font-mono text-[11px] tracking-[0.1em] text-signal">
+                    HOW THE TOOL WORKS
+                  </div>
+                  <ol className="space-y-3 text-[13.5px] leading-relaxed text-muted">
+                    <li>
+                      <span className="text-text">1. Sign in to the Studio</span> — one
+                      account for every project, past and future.
+                    </li>
+                    <li>
+                      <span className="text-text">2. Upload your stems</span> — however
+                      you&apos;ve split them, plus a reference track if you
+                      have one.
+                    </li>
+                    <li>
+                      <span className="text-text">3. Note your channel count</span> — and
+                      any direction on balance, space, or feel, then submit.
+                    </li>
+                    <li>
+                      <span className="text-text">4. Track it from your dashboard</span> —
+                      see the status and message directly if anything
+                      needs adjusting.
+                    </li>
+                    <li>
+                      <span className="text-text">5. Download your mix</span> — a 24-bit
+                      WAV, ready for mastering.
+                    </li>
+                  </ol>
+                </div>
+              }
+            />
           </div>,
           <div key="mastering" className="grid items-start gap-[70px] md:grid-cols-[.9fr_1.1fr]">
             <div className="md:order-2">
@@ -110,7 +145,7 @@ export default function Home() {
                     <SpecRow k="Mastering, per track" count={25} suffix=" CHF" />
                     <SpecRow k="Stem mastering, per track" count={50} suffix=" CHF" />
                     <SpecRow k="Turnaround" v="Typically 2–4 days" hi />
-                    <SpecRow k="Formats" v="WAV 24/16-bit" last />
+                    <SpecRow k="Formats" v="WAV 24-bit" last />
                     <p className="mt-4 text-[12.5px] leading-relaxed text-muted-2">
                       Delivered with your loudness target hit and logged, not
                       guessed at.
@@ -143,7 +178,7 @@ export default function Home() {
                       </li>
                       <li>
                         <span className="text-text">5. Download your master</span> — WAV
-                        24-bit and 16-bit versions, ready to release.
+                        24-bit WAV, ready to release.
                       </li>
                     </ol>
                   </div>

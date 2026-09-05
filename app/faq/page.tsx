@@ -27,7 +27,7 @@ const FAQS = [
   },
   {
     q: "What file formats do you need, and what do I get back?",
-    a: "Send WAV files, 24-bit if possible. You'll get your master back as WAV, 24-bit and 16-bit versions, ready for release or further distribution.",
+    a: "Send WAV files, 24-bit if possible. You'll get your master back as a 24-bit WAV, ready for release or further distribution — 16-bit is a CD-era format at this point and not something delivered by default.",
   },
   {
     q: "Do you master for streaming platforms specifically?",

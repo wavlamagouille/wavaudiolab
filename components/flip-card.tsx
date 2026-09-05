@@ -32,8 +32,19 @@ export default function FlipCard({
 
   const faceStyle = (visible: boolean): React.CSSProperties => ({
     opacity: visible ? 1 : 0,
-    filter: transitioning ? "blur(10px)" : "blur(0px)",
+    // 5px instead of a heavier radius — blur cost scales with radius,
+    // and this is blurring a fairly large, text-heavy element, which is
+    // inherently more expensive than blurring a simple shape (the
+    // browser has to rasterize all that text first, then filter the
+    // result). will-change is applied only during the actual
+    // transition window, not permanently, so the browser promotes this
+    // to its own compositing layer ahead of the animation starting
+    // rather than scrambling to do it mid-transition (a common cause of
+    // a janky first frame), without wasting a layer/memory the rest of
+    // the time this card just sits there.
+    filter: transitioning ? "blur(5px)" : "blur(0px)",
     transition: "opacity 220ms ease, filter 220ms ease",
+    willChange: transitioning ? "filter, opacity" : "auto",
     pointerEvents: visible ? "auto" : "none",
   });
 
